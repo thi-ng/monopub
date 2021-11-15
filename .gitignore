@@ -1,0 +1,6 @@
+export
+node_modules
+dev
+.DS_Store
+*.js
+*.tsbuildinfo
