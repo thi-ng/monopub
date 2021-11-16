@@ -13,7 +13,6 @@ interface App {
     commands: CommandRegistry;
     config: AppConfig;
     ctx: AppContext<any>;
-    // db: IDatabase;
     logger: Logger;
 }
 

@@ -12,15 +12,16 @@ export class Logger extends ConsoleLogger {
 
     protected log(level: string, args: any[]) {
         let msg = `[${level}] ${this.id}: ${args.join(" ")}\n`;
+        const theme = this.config.theme;
         switch (level) {
             case "INFO":
-                msg = this.config.theme.lightYellow(msg);
+                msg = theme.lightYellow(msg);
                 break;
             case "WARN":
-                msg = this.config.theme.lightRed(msg);
+                msg = theme.lightRed(msg);
                 break;
             case "SEVERE":
-                msg = this.config.theme.red(msg);
+                msg = theme.red(msg);
                 break;
             default:
         }

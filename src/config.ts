@@ -17,26 +17,26 @@ export class AppConfig {
     specs: Args<CLIOpts>;
 
     constructor() {
-        this.logLevel = <LogLevelName>process.env.NOTES_LOG_LEVEL || "INFO";
+        this.logLevel = <LogLevelName>process.env.MONOPUB_LOG_LEVEL || "INFO";
         this.specs = {
             repoPath: string({
                 alias: "p",
                 hint: "PATH",
-                default: process.env.THING_MONOPUB_REPO_PATH || process.cwd(),
+                default: process.env.MONOPUB_REPO_PATH || process.cwd(),
                 desc: "Monorepo local path",
                 group: "common",
             }),
             repoUrl: string({
                 alias: "u",
                 hint: "URL",
-                default: process.env.THING_MONOPUB_REPO_URL || "<missing>",
+                default: process.env.MONOPUB_REPO_URL || "<missing>",
                 desc: "Monorepo remote URL",
                 group: "common",
             }),
             scope: string({
                 alias: "s",
                 hint: "SCOPE",
-                default: process.env.THING_MONOPUB_SCOPE,
+                default: process.env.MONOPUB_SCOPE,
                 desc: "Package scope",
                 group: "common",
             }),

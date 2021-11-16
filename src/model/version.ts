@@ -1,5 +1,5 @@
+import { readJSON } from "../io.js";
 import type { Commit, VersionType } from "./api.js";
-import { readJSON } from "./io.js";
 
 export const versionParts = (version: string) => version.split(".").map(Number);
 

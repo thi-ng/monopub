@@ -1,6 +1,6 @@
 import { defDGraph } from "@thi.ng/dgraph";
-import { readJSON } from "./io.js";
-import { pkgShortName } from "./utils.js";
+import { readJSON } from "../io.js";
+import { pkgShortName } from "../utils.js";
 
 export const buildPkgGraph = (root: string, ids: Set<string>) => {
     const graph = defDGraph<string>();

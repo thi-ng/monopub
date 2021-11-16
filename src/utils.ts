@@ -1,14 +1,12 @@
 import { Stream, stream, Subscription } from "@thi.ng/rstream";
 import { isReduced, Reducer, Transducer } from "@thi.ng/transducers";
+import { existsSync } from "fs";
 import type { Readable } from "stream";
-import type { Commit } from "./api.js";
-
-export const isPublish = (x: Commit) => x.title.toLowerCase() === "publish";
-
-export const isBreakingChangeMsg = (x: string) =>
-    x.startsWith("BREAKING CHANGE:");
 
 export const pkgShortName = (name: string) => name.split("/")[1];
+
+export const packageExists = (root: string, pkg: string) =>
+    existsSync(`${root}/packages/${pkg}/package.json`);
 
 /**
  * FIXME replace w/ version from thi.ng/rstream once released

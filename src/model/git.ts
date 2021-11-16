@@ -3,16 +3,17 @@ import { illegalState } from "@thi.ng/errors";
 import { transduce as $transduce } from "@thi.ng/rstream";
 import {
     assocObj,
-    Transducer,
-    Reducer,
     comp,
-    takeWhile,
     filter,
     push,
+    Reducer,
+    takeWhile,
+    Transducer,
 } from "@thi.ng/transducers";
 import { spawn } from "child_process";
-import { CLIOpts, Commit, TAG_PREFIX } from "./api.js";
-import { isBreakingChangeMsg, isPublish, linesFromNodeJS } from "./utils.js";
+import { linesFromNodeJS } from "../utils.js";
+import { Commit, CommitHistoryOpts, TAG_PREFIX } from "./api.js";
+import { isBreakingChangeMsg } from "./utils.js";
 
 const parseTags = (src: string, scope?: string) => {
     const re = /tag: ([@a-z0-9/.-]+)/g;
@@ -76,7 +77,7 @@ export const parseCommit =
                         if (match) {
                             commit.files.push(match[2]);
                             match =
-                                /^packages\/([a-z0-9-]+)\/.*\.(ts|json)$/.exec(
+                                /^packages\/([a-z0-9-]+)\/.*\.(ts|js|json)$/.exec(
                                     match[2]
                                 );
                             if (match && !commit.pkgs.includes(match[1])) {
@@ -113,7 +114,7 @@ export const parseCommit =
         ];
     };
 
-export const commitsSinceLastPublish = async (opts: CLIOpts) => {
+export const commitsSinceLastPublish = async (opts: CommitHistoryOpts) => {
     const cmd = spawn(
         "git",
         [
@@ -123,18 +124,14 @@ export const commitsSinceLastPublish = async (opts: CLIOpts) => {
             "--decorate=full",
             "--date=iso-strict",
         ],
-        { cwd: opts.repoPath }
+        { cwd: opts.path }
     );
+    const sha = opts.limitSha || "<all>";
     return await $transduce(
         linesFromNodeJS(cmd.stdout, cmd.stderr),
         comp(
             parseCommit(opts.scope),
-            // take(10),
-            takeWhile(
-                opts.limitSha
-                    ? (x) => !x.sha.startsWith(opts.limitSha!)
-                    : (x) => !isPublish(x)
-            ),
+            takeWhile((x) => !x.sha.startsWith(sha)),
             filter((x) => x.pkgs.length > 0)
         ),
         push<Commit>()

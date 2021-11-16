@@ -23,6 +23,7 @@ Outstanding:
 - [ ] Commit updated package & changelog files
 - [ ] Create & add release tags
 _ [ ] Push to git remote
+- [ ] Inject `gitHead` into published pkg.json files
 - [ ] Publish to registry
 - [x] Logger
 - [x] thi.ng/args CLI arg parsing
