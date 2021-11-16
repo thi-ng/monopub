@@ -18,7 +18,7 @@ export const buildPkgGraph = (root: string, ids: Set<string>) => {
             }
         } catch (e) {
             ids.delete(id);
-            console.log(`skipping ${id}: ${(<Error>e).message}`);
+            //console.log(`skipping ${id}: ${(<Error>e).message}`);
         }
     }
     return graph;
