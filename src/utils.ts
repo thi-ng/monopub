@@ -1,7 +1,5 @@
-import { Stream, stream } from "@thi.ng/rstream/stream";
-import type { Subscription } from "@thi.ng/rstream/subscription";
-import type { Reducer, Transducer } from "@thi.ng/transducers";
-import { isReduced } from "@thi.ng/transducers/reduced";
+import { Stream, stream, Subscription } from "@thi.ng/rstream";
+import { isReduced, Reducer, Transducer } from "@thi.ng/transducers";
 import type { Readable } from "stream";
 import type { Commit } from "./api.js";
 

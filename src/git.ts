@@ -1,14 +1,17 @@
 import type { Pair } from "@thi.ng/api";
-import { illegalState } from "@thi.ng/errors/illegal-state";
-import { transduce as $transduce } from "@thi.ng/rstream/transduce";
-import type { Reducer, Transducer } from "@thi.ng/transducers";
-import { assocObj } from "@thi.ng/transducers/assoc-obj";
-import { comp } from "@thi.ng/transducers/comp";
-import { filter } from "@thi.ng/transducers/filter";
-import { push } from "@thi.ng/transducers/push";
-import { takeWhile } from "@thi.ng/transducers/take-while";
+import { illegalState } from "@thi.ng/errors";
+import { transduce as $transduce } from "@thi.ng/rstream";
+import {
+    assocObj,
+    Transducer,
+    Reducer,
+    comp,
+    takeWhile,
+    filter,
+    push,
+} from "@thi.ng/transducers";
 import { spawn } from "child_process";
-import { Commit, ReleaseWorkflowOpts, TAG_PREFIX } from "./api.js";
+import { CLIOpts, Commit, TAG_PREFIX } from "./api.js";
 import { isBreakingChangeMsg, isPublish, linesFromNodeJS } from "./utils.js";
 
 const parseTags = (src: string, scope?: string) => {
@@ -110,7 +113,7 @@ export const parseCommit =
         ];
     };
 
-export const commitsSinceLastPublish = async (opts: ReleaseWorkflowOpts) => {
+export const commitsSinceLastPublish = async (opts: CLIOpts) => {
     const cmd = spawn(
         "git",
         [

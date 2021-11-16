@@ -1,16 +1,99 @@
-import { FMT_ISO_SHORT } from "@thi.ng/date/format";
-import { comp } from "@thi.ng/transducers/comp";
-import { filter } from "@thi.ng/transducers/filter";
-import { groupByObj } from "@thi.ng/transducers/group-by-obj";
-import { transduce } from "@thi.ng/transducers/transduce";
+import { Args, string } from "@thi.ng/args";
+import { FMT_ISO_SHORT } from "@thi.ng/date";
+import {
+    comp,
+    conj,
+    filter,
+    groupByObj,
+    mapcat,
+    partitionWhen,
+    transduce,
+} from "@thi.ng/transducers";
 import {
     CHANGELOG_TYPES,
     CHANGELOG_TYPE_LABELS,
+    CLIOpts,
+    CommandSpec,
     Commit,
-    ReleaseWorkflowOpts,
-} from "./api.js";
-import { isBreakingChangeMsg } from "./utils.js";
-import { classifyVersion } from "./version.js";
+    DryRunOpts,
+} from "../api.js";
+import { commitsSinceLastPublish } from "../git.js";
+import { buildPkgGraph } from "../graph.js";
+import { writeText } from "../io.js";
+import { isBreakingChangeMsg, isPublish } from "../utils.js";
+import {
+    classifyNextVersion,
+    classifyVersion,
+    getNextVersion,
+} from "../version.js";
+import { ARG_DRY } from "./args.js";
+
+export interface ChangelogOpts extends CLIOpts, DryRunOpts {
+    outDir: string;
+}
+
+export const CHANGELOG: CommandSpec<ChangelogOpts> = {
+    fn: async ({ logger, opts }) => {
+        logger.info("changelog");
+        console.log(opts);
+
+        const t0 = Date.now();
+        const commits = await commitsSinceLastPublish(opts);
+        const touchedPackages = transduce(
+            mapcat((x) => x.pkgs),
+            conj<string>(),
+            commits
+        );
+        const groups = [...partitionWhen(isPublish, commits)];
+        const graph = buildPkgGraph(opts.repoPath, touchedPackages);
+        graph;
+        console.log(commits.length);
+        console.log(touchedPackages);
+        console.log([...graph]);
+        const dest = process.env.THING_MONOPUB_EXPORT_PATH || "tmp";
+        writeText(
+            `${dest}/gitlog.json`,
+            JSON.stringify(groups, null, 4),
+            logger,
+            opts.dryRun
+        );
+        for (let pkg of touchedPackages) {
+            const nextVersion = getNextVersion(
+                opts.repoPath,
+                pkg,
+                classifyNextVersion(pkg, groups[0])
+            );
+            console.log(pkg, nextVersion);
+            const changelog = changeLogForPackage(
+                opts,
+                pkg,
+                nextVersion,
+                groups,
+                false
+            );
+            if (changelog) {
+                writeText(
+                    `${dest}/changelog-${pkg}.md`,
+                    changelog,
+                    logger,
+                    opts.dryRun
+                );
+            } else {
+                console.log("skipping changelog:", pkg);
+            }
+        }
+        console.log((Date.now() - t0) / 1000);
+    },
+    opts: <Args<ChangelogOpts>>{
+        ...ARG_DRY,
+        outDir: string({
+            alias: "o",
+            hint: "PATH",
+            desc: "Output directory for changelogs",
+        }),
+    },
+    usage: "Create changelog",
+};
 
 /**
  * Applies some Github Flavored Markdown formatting to given line. Currently,
@@ -41,7 +124,7 @@ const formatGFM = (repoUrl: string, line: string) =>
  * @param newOnly
  */
 export const changeLogForPackage = (
-    opts: ReleaseWorkflowOpts,
+    opts: ChangelogOpts,
     id: string,
     nextVersion: string,
     releases: Commit[][],
