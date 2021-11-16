@@ -24,6 +24,9 @@ Outstanding:
 - [ ] Create & add release tags
 _ [ ] Push to git remote
 - [ ] Publish to registry
+- [ ] Logger
+- [ ] thi.ng/args CLI arg parsing
+- [ ] thi.ng/system setup
 
 ## Goals & Non-goals
 
