@@ -1,9 +1,10 @@
 import type { IObjectOf } from "@thi.ng/api";
 import { defDGraph } from "@thi.ng/dgraph";
+import { assert } from "@thi.ng/errors";
 import { conj, mapcat, partitionWhen, transduce } from "@thi.ng/transducers";
 import { readJSON, writeText } from "../io.js";
 import type { Logger } from "../logger.js";
-import { pkgPath, pkgShortName } from "../utils.js";
+import { pkgJsonPath, pkgShortName } from "../utils.js";
 import type { ReleaseSpec, ReleaseSpecOpts } from "./api.js";
 import { commitsSinceLastPublish } from "./git.js";
 import { isPublish } from "./utils.js";
@@ -14,6 +15,7 @@ export const buildReleaseSpec = async (
     logger: Logger
 ) => {
     const commits = await commitsSinceLastPublish(opts);
+    assert(commits.length > 0, `no commits yet, exiting...`);
     let groups = [...partitionWhen(isPublish, commits)];
     const [unreleased, previous] = isPublish(groups[0][0])
         ? [[], groups]
@@ -36,7 +38,7 @@ export const buildReleaseSpec = async (
         touchedPkgIDs,
         logger
     );
-    const graph = buildPkgGraph(deps);
+    const graph = buildPkgGraph(deps, opts.scope);
     const spec: ReleaseSpec = {
         repo: opts,
         touched: touchedPkgIDs,
@@ -87,7 +89,7 @@ const buildPkgCache = (
     const versions: IObjectOf<string> = {};
     for (let id of allPkgIDs) {
         try {
-            const pkg = readJSON(pkgPath(opts.path, opts.pkgRoot, id));
+            const pkg = readJSON(pkgJsonPath(opts.path, opts.pkgRoot, id));
             versions[id] = pkg.version;
             deps[id] = Object.keys(pkg.dependencies || {});
         } catch (_) {
@@ -99,14 +101,13 @@ const buildPkgCache = (
     return { deps, versions };
 };
 
-export const buildPkgGraph = (cache: IObjectOf<string[]>) => {
+export const buildPkgGraph = (cache: IObjectOf<string[]>, scope: string) => {
     const graph = defDGraph<string>();
     for (let id in cache) {
         const deps = cache[id];
         if (deps.length) {
             for (let d of deps) {
-                d.startsWith("@thi.ng/") &&
-                    graph.addDependency(id, pkgShortName(d));
+                d.startsWith(scope) && graph.addDependency(id, pkgShortName(d));
             }
         } else {
             graph.addNode(id);

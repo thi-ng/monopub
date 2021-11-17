@@ -1,10 +1,13 @@
-import { Args, flag, oneOfMulti, string } from "@thi.ng/args";
+import { Args, string } from "@thi.ng/args";
 import { FMT_ISO_SHORT } from "@thi.ng/date";
 import { comp, filter, groupByObj, transduce } from "@thi.ng/transducers";
 import { resolve } from "path";
-import type {
+import {
+    AllPkgOpts,
+    CCTypeOpts,
     CLIOpts,
     CommandSpec,
+    DEFAULT_CHANGELOG_BRANCH,
     DryRunOpts,
     DumpSpecOpts,
     OutDirOpts,
@@ -20,16 +23,22 @@ import {
 } from "../model/api.js";
 import { isBreakingChangeMsg } from "../model/utils.js";
 import { classifyVersion } from "../model/version.js";
-import { ARG_DRY, ARG_DUMP_SPEC, ARG_OUT_DIR } from "./args.js";
+import {
+    ARG_ALL,
+    ARG_CC_TYPES,
+    ARG_DRY,
+    ARG_DUMP_SPEC,
+    ARG_OUT_DIR,
+} from "./args.js";
 import { buildReleaseSpecFromCtx } from "./common.js";
 
 export interface ChangelogOpts
     extends CLIOpts,
+        AllPkgOpts,
+        CCTypeOpts,
         DumpSpecOpts,
         DryRunOpts,
         OutDirOpts {
-    all: boolean;
-    ccTypes: string[];
     branch: string;
 }
 
@@ -42,25 +51,17 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
         );
     },
     opts: <Args<ChangelogOpts>>{
+        ...ARG_ALL,
+        ...ARG_CC_TYPES,
         ...ARG_DRY,
         ...ARG_DUMP_SPEC,
         ...ARG_OUT_DIR,
-        all: flag({
-            alias: "a",
-            desc: "Process all packages, not just unreleased",
-        }),
+
         branch: string({
             alias: "b",
             hint: "NAME",
-            default: "develop",
+            default: DEFAULT_CHANGELOG_BRANCH,
             desc: "Remote Git branch for package links in changelog",
-        }),
-        ccTypes: oneOfMulti(CHANGELOG_TYPE_ORDER.slice(1), {
-            alias: "cc",
-            hint: "TYPE",
-            delim: ",",
-            default: ["feat", "fix", "refactor", "perf"],
-            desc: "Only consider given Conventional Commit types for determining changes",
         }),
     },
     usage: "Create/update changelogs",
@@ -68,7 +69,7 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
 
 export const generateChangeLogs = (
     opts: ChangelogOpts,
-    spec: ReleaseSpec,
+    spec: Readonly<ReleaseSpec>,
     logger: Logger
 ) => {
     const dest = resolve(opts.outDir || opts.repoPath);
@@ -116,14 +117,15 @@ const changeLogForPackage = (
 ) => {
     const allowedTypes = opts.ccTypes || CHANGELOG_TYPE_ORDER;
     const changelog: any[] = [
-        "# Change log",
+        "# Change Log",
         "",
         `Last updated: ${FMT_ISO_SHORT(Date.now(), true)}`,
         "",
         "All notable changes to this project will be documented in this file.",
         "See [Conventional Commits](https://conventionalcommits.org/) for commit guidelines.",
         "",
-        "**Note:** Unlisted _patch_ versions only involve version bumps of transitive dependencies",
+        "**Note:** Unlisted _patch_ versions only involve non-code changes and/or",
+        "version bumps of transitive dependencies.",
         "",
     ];
     let first = true;

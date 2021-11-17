@@ -33,6 +33,14 @@ export interface CLIOpts {
     alias: KVDict;
 }
 
+export interface AllPkgOpts {
+    all: boolean;
+}
+
+export interface CCTypeOpts {
+    ccTypes: string[];
+}
+
 export interface DryRunOpts {
     dryRun: boolean;
 }
@@ -84,3 +92,9 @@ export const HEADER = `
 `;
 
 export const REQUIRED = "<required>";
+
+export const DEFAULT_CHANGELOG_BRANCH = "main";
+
+export const DEFAULT_RELEASE_BRANCH = "main";
+
+export const DEFAULT_CC_TYPES = ["feat", "fix", "refactor", "perf"];
