@@ -48,7 +48,7 @@ export const buildReleaseSpec = async (
         versions,
         nextVersions: {},
     };
-    if (unreleased.length) {
+    if (unreleased.length || opts.all) {
         const transitivePackages = transduce(
             mapcat((id) => [id, ...graph.transitiveDependents(id)]),
             conj<string>(),
