@@ -2,67 +2,49 @@ import { Args, flag, oneOfMulti, string } from "@thi.ng/args";
 import { FMT_ISO_SHORT } from "@thi.ng/date";
 import { comp, filter, groupByObj, transduce } from "@thi.ng/transducers";
 import { resolve } from "path";
-import type { CLIOpts, CommandSpec, DryRunOpts, DumpSpecOpts } from "../api.js";
+import type {
+    CLIOpts,
+    CommandSpec,
+    DryRunOpts,
+    DumpSpecOpts,
+    OutDirOpts,
+} from "../api.js";
 import { writeText } from "../io.js";
+import type { Logger } from "../logger.js";
 import {
     CHANGELOG_TYPE_LABELS,
     CHANGELOG_TYPE_ORDER,
     Commit,
     ConventionalCommitType,
+    ReleaseSpec,
 } from "../model/api.js";
-import { buildReleaseSpec } from "../model/release.js";
 import { isBreakingChangeMsg } from "../model/utils.js";
 import { classifyVersion } from "../model/version.js";
-import { ARG_DRY, ARG_DUMP_SPEC } from "./args.js";
+import { ARG_DRY, ARG_DUMP_SPEC, ARG_OUT_DIR } from "./args.js";
+import { buildReleaseSpecFromCtx } from "./common.js";
 
-export interface ChangelogOpts extends CLIOpts, DumpSpecOpts, DryRunOpts {
+export interface ChangelogOpts
+    extends CLIOpts,
+        DumpSpecOpts,
+        DryRunOpts,
+        OutDirOpts {
     all: boolean;
-    outDir?: string;
     ccTypes: string[];
     branch: string;
 }
 
 export const CHANGELOG: CommandSpec<ChangelogOpts> = {
-    fn: async ({ logger, opts }) => {
-        const spec = await buildReleaseSpec(
-            {
-                path: opts.repoPath,
-                url: opts.repoUrl,
-                scope: opts.scope,
-                pkgRoot: opts.root,
-                fileExt: opts.ext,
-                alias: opts.alias,
-                all: opts.all,
-                dump: opts.dumpSpec,
-            },
-            logger
+    fn: async (ctx) => {
+        generateChangeLogs(
+            ctx.opts,
+            await buildReleaseSpecFromCtx(ctx),
+            ctx.logger
         );
-        const dest = resolve(opts.outDir || opts.repoPath);
-
-        for (let pkg of spec.touched) {
-            logger.debug(pkg, spec.nextVersions[pkg]);
-            const changelog = changeLogForPackage(
-                opts,
-                pkg,
-                spec.nextVersions[pkg],
-                [spec.unreleased, ...spec.previous],
-                false
-            );
-            if (changelog) {
-                writeText(
-                    `${dest}/packages/${pkg}/CHANGELOG.md`,
-                    changelog,
-                    logger,
-                    opts.dryRun
-                );
-            } else {
-                logger.info("skipping changelog:", pkg);
-            }
-        }
     },
     opts: <Args<ChangelogOpts>>{
         ...ARG_DRY,
         ...ARG_DUMP_SPEC,
+        ...ARG_OUT_DIR,
         all: flag({
             alias: "a",
             desc: "Process all packages, not just unreleased",
@@ -73,11 +55,6 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
             default: "develop",
             desc: "Remote Git branch for package links in changelog",
         }),
-        outDir: string({
-            alias: "o",
-            hint: "PATH",
-            desc: "Output root dir for changelogs (default: --repo-path)",
-        }),
         ccTypes: oneOfMulti(CHANGELOG_TYPE_ORDER.slice(1), {
             alias: "cc",
             hint: "TYPE",
@@ -87,6 +64,34 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
         }),
     },
     usage: "Create/update changelogs",
+};
+
+export const generateChangeLogs = (
+    opts: ChangelogOpts,
+    spec: ReleaseSpec,
+    logger: Logger
+) => {
+    const dest = resolve(opts.outDir || opts.repoPath);
+    for (let pkg of spec.touched) {
+        logger.debug(pkg, spec.nextVersions[pkg]);
+        const changelog = changeLogForPackage(
+            opts,
+            pkg,
+            spec.nextVersions[pkg],
+            [spec.unreleased, ...spec.previous],
+            false
+        );
+        if (changelog) {
+            writeText(
+                `${dest}/packages/${pkg}/CHANGELOG.md`,
+                changelog,
+                logger,
+                opts.dryRun
+            );
+        } else {
+            logger.info("skipping changelog:", pkg);
+        }
+    }
 };
 
 /**
@@ -102,7 +107,7 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
  * @param releases
  * @param newOnly
  */
-export const changeLogForPackage = (
+const changeLogForPackage = (
     opts: ChangelogOpts,
     id: string,
     nextVersion: string,

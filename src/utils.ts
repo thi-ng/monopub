@@ -1,12 +1,11 @@
 import { Stream, stream, Subscription } from "@thi.ng/rstream";
 import { isReduced, Reducer, Transducer } from "@thi.ng/transducers";
-import { existsSync } from "fs";
 import type { Readable } from "stream";
 
 export const pkgShortName = (name: string) => name.split("/")[1];
 
-export const packageExists = (root: string, pkg: string) =>
-    existsSync(`${root}/packages/${pkg}/package.json`);
+export const pkgPath = (repo: string, root: string, pkg: string) =>
+    `${repo}/${root}/${pkg}/package.json`;
 
 /**
  * FIXME replace w/ version from thi.ng/rstream once released

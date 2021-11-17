@@ -10,3 +10,11 @@ export const ARG_DUMP_SPEC = {
         desc: "Write release spec to JSON file",
     }),
 };
+
+export const ARG_OUT_DIR = {
+    outDir: string({
+        alias: "o",
+        hint: "PATH",
+        desc: "Output root dir for changelogs (default: --repo-path)",
+    }),
+};

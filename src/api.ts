@@ -41,6 +41,10 @@ export interface DumpSpecOpts {
     dumpSpec?: string;
 }
 
+export interface OutDirOpts {
+    outDir?: string;
+}
+
 export interface CommandSpec<T extends CLIOpts> {
     /**
      * Actual command implementation

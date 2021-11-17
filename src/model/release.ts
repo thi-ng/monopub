@@ -3,7 +3,7 @@ import { defDGraph } from "@thi.ng/dgraph";
 import { conj, mapcat, partitionWhen, transduce } from "@thi.ng/transducers";
 import { readJSON, writeText } from "../io.js";
 import type { Logger } from "../logger.js";
-import { pkgShortName } from "../utils.js";
+import { pkgPath, pkgShortName } from "../utils.js";
 import type { ReleaseSpec, ReleaseSpecOpts } from "./api.js";
 import { commitsSinceLastPublish } from "./git.js";
 import { isPublish } from "./utils.js";
@@ -87,9 +87,7 @@ const buildPkgCache = (
     const versions: IObjectOf<string> = {};
     for (let id of allPkgIDs) {
         try {
-            const pkg = readJSON(
-                `${opts.path}/${opts.pkgRoot}/${id}/package.json`
-            );
+            const pkg = readJSON(pkgPath(opts.path, opts.pkgRoot, id));
             versions[id] = pkg.version;
             deps[id] = Object.keys(pkg.dependencies || {});
         } catch (_) {
