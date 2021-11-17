@@ -1,3 +1,4 @@
+import type { IObjectOf } from "@thi.ng/api";
 import type { Args } from "@thi.ng/args";
 import { assert } from "@thi.ng/errors";
 import { resolve } from "path";
@@ -46,7 +47,6 @@ export const applyVersionBumps = (
     logger: Logger
 ) => {
     const dest = resolve(opts.outDir || opts.repoPath);
-    const reSemVer = /^\^?\d+\.\d+\.\d+/;
     for (let id in spec.nextVersions) {
         const nextVersion = spec.nextVersions[id];
         assert(!!nextVersion, `missing version info for pkg: ${id}`);
@@ -57,21 +57,32 @@ export const applyVersionBumps = (
         );
         pkg.version = nextVersion;
         logger.info(`version bump:`, id, spec.versions[id], "->", nextVersion);
-        const deps = pkg.dependencies;
-        if (deps) {
-            for (let id in deps) {
-                if (
-                    !id.startsWith(opts.scope) ||
-                    // only process semver deps
-                    !reSemVer.test(deps[id])
-                ) {
-                    logger.debug(`skipping dep: ${id}: ${deps[id]}`);
-                    continue;
-                }
-                const name = pkgShortName(id);
-                deps[id] = `^${spec.nextVersions[name] || spec.versions[name]}`;
-            }
-        }
+        pkg.dependencies &&
+            updateDeps(opts.scope, pkg.dependencies, spec, logger);
+        pkg.devDependencies &&
+            updateDeps(opts.scope, pkg.devDependencies, spec, logger);
         writeJSON(pkgJsonPath(dest, opts.root, id), pkg, logger, opts.dryRun);
+    }
+};
+
+const RE_SEMVER = /^\^?\d+\.\d+\.\d+/;
+
+const updateDeps = (
+    scope: string,
+    deps: IObjectOf<string>,
+    spec: ReleaseSpec,
+    logger: Logger
+) => {
+    for (let id in deps) {
+        if (
+            !id.startsWith(scope) ||
+            // only process semver deps
+            !RE_SEMVER.test(deps[id])
+        ) {
+            logger.debug(`skipping dep: ${id}: ${deps[id]}`);
+            continue;
+        }
+        const name = pkgShortName(id);
+        deps[id] = `^${spec.nextVersions[name] || spec.versions[name]}`;
     }
 };
