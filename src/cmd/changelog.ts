@@ -1,5 +1,5 @@
 import { Args, string } from "@thi.ng/args";
-import { FMT_ISO_SHORT } from "@thi.ng/date";
+import { dateTime, FMT_ISO_SHORT } from "@thi.ng/date";
 import { comp, filter, groupByObj, transduce } from "@thi.ng/transducers";
 import { resolve } from "path";
 import {
@@ -119,13 +119,14 @@ const changeLogForPackage = (
     const changelog: any[] = [
         "# Change Log",
         "",
-        `Last updated: ${FMT_ISO_SHORT(Date.now(), true)}`,
+        `- **Last updated**: ${FMT_ISO_SHORT(Date.now(), true)}`,
+        `- **Generator**: [thi.ng/monopub](https://thi.ng/monopub)`,
         "",
         "All notable changes to this project will be documented in this file.",
         "See [Conventional Commits](https://conventionalcommits.org/) for commit guidelines.",
         "",
-        "**Note:** Unlisted _patch_ versions only involve non-code changes and/or",
-        "version bumps of transitive dependencies.",
+        "**Note:** Unlisted _patch_ versions only involve non-code or otherwise excluded changes",
+        "and/or version bumps of transitive dependencies.",
         "",
     ];
     let first = true;
@@ -140,7 +141,7 @@ const changeLogForPackage = (
             commits = r;
         } else {
             version = r[0].tags[id];
-            date = r[0].date;
+            date = FMT_ISO_SHORT(dateTime(r[0].date), true);
             commits = r.slice(1);
         }
         if (!version) {
