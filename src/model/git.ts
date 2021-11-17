@@ -1,4 +1,5 @@
 import type { Pair } from "@thi.ng/api";
+import type { KVDict } from "@thi.ng/args";
 import { illegalState } from "@thi.ng/errors";
 import { transduce as $transduce } from "@thi.ng/rstream";
 import {
@@ -7,18 +8,17 @@ import {
     filter,
     push,
     Reducer,
-    takeWhile,
     Transducer,
 } from "@thi.ng/transducers";
 import { spawn } from "child_process";
 import { linesFromNodeJS } from "../utils.js";
-import { Commit, CommitHistoryOpts, TAG_PREFIX } from "./api.js";
+import type { Commit, CommitHistoryOpts, RepoConfig } from "./api.js";
 import { isBreakingChangeMsg } from "./utils.js";
 
-const parseTags = (src: string, scope?: string) => {
+const parseTags = (src: string, scope: string) => {
     const re = /tag: ([@a-z0-9/.-]+)/g;
     const tags: Pair<string, string>[] = [];
-    const prefix = scope ? `${TAG_PREFIX}${scope}/` : TAG_PREFIX;
+    const prefix = `refs/tags/${scope}/`;
     let match: RegExpExecArray | null;
     while ((match = re.exec(src))) {
         tags.push(
@@ -28,6 +28,10 @@ const parseTags = (src: string, scope?: string) => {
     return assocObj(tags);
 };
 
+type ParseCommitOpts = Required<
+    Pick<RepoConfig, "scope" | "pkgRoot" | "fileExt" | "alias">
+>;
+
 /**
  * Transducer consuming lines from `git log` and parsing/grouping them into
  * {@link Commit} objects. Used by {@link commitsSinceLastPublish}.
@@ -35,8 +39,16 @@ const parseTags = (src: string, scope?: string) => {
  * @param scope
  */
 export const parseCommit =
-    (scope?: string): Transducer<string, Commit> =>
+    (opts: ParseCommitOpts): Transducer<string, Commit> =>
     ([init, complete, reduce]: Reducer<any, Commit>) => {
+        const reCommitHeader = /^commit ([a-f0-9]{40})(.*)/i;
+        const reCommitMeta = /^(author|date):\s+(.*)/i;
+        const reConventionalCommit = /^([a-z]+)(\([a-z0-9_-]+\))?:\s+(.+)/i;
+        const reFileChange = /^([adm]|[cr]\d+)\s+(.*)/i;
+        const fileExt = [...new Set(["json", ...opts.fileExt])].join("|");
+        const rePkgFile = new RegExp(
+            `^${opts.pkgRoot}/([a-z0-9_-]+)/.+\\.(${fileExt})$`
+        );
         let commit: Commit | undefined;
         return [
             init,
@@ -48,14 +60,14 @@ export const parseCommit =
                 return complete(acc);
             },
             (acc: any, line: string) => {
-                let match = /^commit ([a-f0-9]{40})(.*)/i.exec(line);
+                let match = reCommitHeader.exec(line);
                 if (match) {
                     if (commit) {
                         acc = reduce(acc, commit);
                     }
                     commit = <Commit>{
                         sha: match[1],
-                        tags: parseTags(match[2], scope),
+                        tags: parseTags(match[2], opts.scope),
                         title: "",
                         msg: [],
                         files: [],
@@ -66,31 +78,31 @@ export const parseCommit =
                         breaking: false,
                     };
                 } else if (commit) {
-                    match = /^(author|date):\s+(.*)/i.exec(line);
+                    match = reCommitMeta.exec(line);
                     if (match) {
                         if (match[1].toLowerCase() === "author")
                             commit.author = match[2];
                         if (match[1].toLowerCase() === "date")
                             commit.date = match[2];
                     } else {
-                        match = /^([adm]|[cr]\d+)\s+(.*)/i.exec(line);
+                        match = reFileChange.exec(line);
                         if (match) {
-                            commit.files.push(match[2]);
-                            match =
-                                /^packages\/([a-z0-9-]+)\/.*\.(ts|js|json)$/.exec(
-                                    match[2]
+                            const matchExt = rePkgFile.exec(match[2]);
+                            if (matchExt) {
+                                commit.files.push(match[2]);
+                                const pkgName = resolveAlias(
+                                    opts.alias,
+                                    matchExt[1]
                                 );
-                            if (match && !commit.pkgs.includes(match[1])) {
-                                commit.pkgs.push(match[1]);
+                                if (!commit.pkgs.includes(pkgName)) {
+                                    commit.pkgs.push(pkgName);
+                                }
                             }
                         } else {
                             line = line.substr(4);
                             if (line.length) {
                                 if (!commit.title) {
-                                    match =
-                                        /^([a-z]+)(\([a-z0-9-]+\))?:\s+(.+)/i.exec(
-                                            line
-                                        );
+                                    match = reConventionalCommit.exec(line);
                                     if (match) {
                                         commit.type = match[1];
                                         commit.title = match[3];
@@ -114,6 +126,8 @@ export const parseCommit =
         ];
     };
 
+const resolveAlias = (aliases: KVDict, id: string) => aliases[id] || id;
+
 export const commitsSinceLastPublish = async (opts: CommitHistoryOpts) => {
     const cmd = spawn(
         "git",
@@ -126,12 +140,10 @@ export const commitsSinceLastPublish = async (opts: CommitHistoryOpts) => {
         ],
         { cwd: opts.path }
     );
-    const sha = opts.limitSha || "<all>";
     return await $transduce(
         linesFromNodeJS(cmd.stdout, cmd.stderr),
         comp(
-            parseCommit(opts.scope),
-            takeWhile((x) => !x.sha.startsWith(sha)),
+            parseCommit(opts),
             filter((x) => x.pkgs.length > 0)
         ),
         push<Commit>()

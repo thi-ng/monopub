@@ -7,7 +7,12 @@ export class Logger extends ConsoleLogger {
     }
 
     dry(isDry: boolean, ...args: any[]) {
-        this.log("INFO", isDry ? ["[dryrun]", ...args] : args);
+        this.level <= LogLevel.INFO &&
+            this.log("INFO", isDry ? ["[dryrun]", ...args] : args);
+    }
+
+    important(...args: any[]) {
+        this.level <= LogLevel.NONE && this.log("INFO", args);
     }
 
     protected log(level: string, args: any[]) {

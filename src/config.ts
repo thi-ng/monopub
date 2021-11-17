@@ -1,4 +1,4 @@
-import { Args, string } from "@thi.ng/args";
+import { Args, kvPairs, string, strings } from "@thi.ng/args";
 import type { LogLevelName } from "@thi.ng/logger";
 import {
     defFormatPresets,
@@ -7,7 +7,7 @@ import {
     FormatPresets,
     StringFormat,
 } from "@thi.ng/text-format";
-import type { CLIOpts } from "./api.js";
+import { CLIOpts, REQUIRED } from "./api.js";
 
 export class AppConfig {
     logLevel: LogLevelName;
@@ -22,32 +22,49 @@ export class AppConfig {
             repoPath: string({
                 alias: "p",
                 hint: "PATH",
-                default: process.env.MONOPUB_REPO_PATH || process.cwd(),
+                default: process.env.MONOPUB_REPO_PATH || REQUIRED,
                 desc: "Monorepo local path",
                 group: "common",
             }),
             repoUrl: string({
                 alias: "u",
                 hint: "URL",
-                default: process.env.MONOPUB_REPO_URL || "<missing>",
+                default: process.env.MONOPUB_REPO_URL || REQUIRED,
                 desc: "Monorepo remote URL",
                 group: "common",
             }),
             scope: string({
                 alias: "s",
                 hint: "SCOPE",
-                default: process.env.MONOPUB_SCOPE,
+                default: process.env.MONOPUB_SCOPE || REQUIRED,
                 desc: "Package scope",
                 group: "common",
             }),
-            limitSha: string({
-                alias: "sha",
-                hint: "SHA1",
-                desc: "Consider only commits newer than given hash",
+            root: string({
+                alias: "r",
+                hint: "PATH",
+                default: process.env.MONOPUB_PKG_ROOT || "packages",
+                desc: "Relative package root dir in repo",
                 group: "common",
+            }),
+            ext: strings({
+                delim: ",",
+                hint: "EXT",
+                default: [".+"],
+                desc: "File types to consider for changes (comma separated)",
+                group: "common",
+            }),
+            alias: kvPairs({
+                alias: "A",
+                default: {},
+                desc: "Alias pkg names (old=new)",
             }),
         };
         this.setFormat(process.env.NO_COLOR ? FMT_NONE : FMT_ANSI16);
+    }
+
+    get isColor() {
+        return this.fmt !== FMT_NONE;
     }
 
     setFormat(fmt: StringFormat) {

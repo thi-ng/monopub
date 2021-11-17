@@ -1,5 +1,35 @@
 import type { IObjectOf } from "@thi.ng/api";
+import type { KVDict } from "@thi.ng/args";
 import type { DGraph } from "@thi.ng/dgraph";
+
+export interface RepoConfig {
+    /**
+     * Absolute local monorepo path/root dir
+     */
+    path: string;
+    /**
+     * Remote monorepo base URL (e.g. https://github.com/thi-ng/umbrella) - NO trailing slash!
+     */
+    url: string;
+    /**
+     * Relative package root dir in repo (NO trailing slash!).
+     *
+     * @defaultValue "packages"
+     */
+    pkgRoot: string;
+    /**
+     * Common package scope for all packages in the monorepo, e.g. `@thi.ng`.
+     */
+    scope: string;
+    /**
+     * Only consider given file types/extensions for determining changes
+     */
+    fileExt: string[];
+    /**
+     * Package names aliases (keys = old name, vals = new name)
+     */
+    alias: KVDict;
+}
 
 export interface Commit {
     /**
@@ -10,7 +40,7 @@ export interface Commit {
      * Object of unscoped package names (as keys) and their versions (as
      * values).
      */
-    tags: Record<string, string>;
+    tags: IObjectOf<string>;
     /**
      * First line of commit message
      */
@@ -46,31 +76,46 @@ export interface Commit {
     breaking: boolean;
 }
 
-export interface CommitHistoryOpts {
-    path: string;
-    scope?: string;
-    limitSha?: string;
-    all?: boolean;
+export interface CommitHistoryOpts extends RepoConfig {
+    all: boolean;
+}
+
+export interface ReleaseSpecOpts extends CommitHistoryOpts {
+    dump?: string;
 }
 
 export interface ReleaseSpec {
+    repo: RepoConfig;
     touched: Set<string>;
     graph: DGraph<string>;
     unreleased: Commit[];
     previous: Commit[][];
     versions: IObjectOf<string>;
+    nextVersions: IObjectOf<string>;
 }
 
 export type VersionType = "major" | "minor" | "patch";
 
-export const TAG_PREFIX = "refs/tags/";
+export const CHANGELOG_TYPE_ORDER: ConventionalCommitType[] = [
+    "break",
+    "feat",
+    "fix",
+    "perf",
+    "refactor",
+    "build",
+    "docs",
+    "chore",
+];
 
-export const CHANGELOG_TYPES = ["break", "feat", "fix", "refactor", "perf"];
+export type ConventionalCommitType = keyof typeof CHANGELOG_TYPE_LABELS;
 
-export const CHANGELOG_TYPE_LABELS: Record<string, string> = {
-    break: "Breaking changes",
-    feat: "Features",
-    fix: "Bug fixes",
-    refactor: "Refactoring",
-    perf: "Performance",
+export const CHANGELOG_TYPE_LABELS = {
+    break: "🛑 Breaking changes",
+    build: "🛠 Build related",
+    chore: "🧹 Chores",
+    docs: "📖 Documentation",
+    feat: "🚀 Features",
+    fix: "🩹 Bug fixes",
+    refactor: "♻️ Refactoring",
+    perf: "⏱ Performance improvements",
 };

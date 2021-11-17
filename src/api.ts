@@ -1,5 +1,5 @@
 import type { Fn } from "@thi.ng/api";
-import type { Args } from "@thi.ng/args";
+import type { Args, KVDict } from "@thi.ng/args";
 import { resolve } from "path";
 import type { AppConfig } from "./config.js";
 import { readJSON } from "./io.js";
@@ -8,25 +8,37 @@ import { pkgShortName } from "./utils.js";
 
 export interface CLIOpts {
     /**
-     * Local monorepo path/root dir
+     * Same as {@link RepoConfig.path}
      */
     repoPath: string;
     /**
-     * Remote monorepo base URL (e.g. https://github.com/thi-ng/umbrella) - NO trailing slash!
+     * Same as {@link RepoConfig.url}
      */
     repoUrl: string;
     /**
-     * Common package scope for all packages in the monorepo, e.g. `@thi.ng`.
+     * Same as {@link RepoConfig.scope}
      */
-    scope?: string;
+    scope: string;
     /**
-     * Only process commits newer than given SHA1.
+     * Same as {@link RepoConfig.pkgRoot}
      */
-    limitSha?: string;
+    root: string;
+    /**
+     * Same as {@link RepoConfig.fileExt}
+     */
+    ext: string[];
+    /**
+     * Same as {@link RepoConfig.alias}
+     */
+    alias: KVDict;
 }
 
 export interface DryRunOpts {
     dryRun: boolean;
+}
+
+export interface DumpSpecOpts {
+    dumpSpec?: string;
 }
 
 export interface CommandSpec<T extends CLIOpts> {
@@ -66,3 +78,5 @@ export const HEADER = `
                  █ │
                █ █ │
 `;
+
+export const REQUIRED = "<required>";

@@ -1,5 +1,5 @@
 import type { IObjectOf } from "@thi.ng/api";
-import { parse, usage, UsageOpts } from "@thi.ng/args";
+import { DEFAULT_THEME, parse, usage, UsageOpts } from "@thi.ng/args";
 import { padRight, repeat, wordWrapLine } from "@thi.ng/strings";
 import type { FormatPresets } from "@thi.ng/text-format";
 import { APP_NAME, CommandCtx, CommandSpec, HEADER } from "./api.js";
@@ -40,6 +40,7 @@ export class ArgParser {
                         start: 4,
                         usageOpts: {
                             ...usageOpts,
+                            color: this.config.isColor ? DEFAULT_THEME : false,
                             prefix: commandUsagePrefix(
                                 cmd,
                                 cmdSpec,
@@ -60,6 +61,7 @@ export class ArgParser {
                 process.stdout.write(
                     usage(this.config.specs, {
                         ...usageOpts,
+                        color: this.config.isColor ? DEFAULT_THEME : false,
                         prefix: commonUsagePrefix(commands),
                     })
                 );
