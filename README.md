@@ -11,20 +11,25 @@ Early stage MVP - not much to see yet...
 Currently implemented:
 
 - [x] Detailed Git commit parsing, filtering & analysis
-- [x] Computing packages touched by recent commits
+  - [x] Filter by file ext
+  - [x] Package name aliases (to assign commits from old pkg names)
+- [x] Computing packages touched by recent commits (or allow forcing all)
 - [x] Dependency graph construction for monorepo internal packages (incl. topological sort)
 - [x] Computing new package versions (based on Conventional Commit types used)
 - [x] Selective changelog creation (as Markdown files)
+  - [x] Commit type config
 - [x] Repo/publish config via dotenv
 - [x] Update package files w/ version bumps
+  - [x] Update/bump deps in transitive dependents
 - [x] Commit updated package & changelog files
 - [x] Create & add release tags
-_ [x] Push to git remote
+- [x] Push to git remote
 - [x] Inject `gitHead` into published pkg.json files
 - [x] Publish to registry
-- [x] Logger
-- [x] thi.ng/args CLI arg parsing
-- [x] thi.ng/system setup
+- [x] Reset git head post-publish
+- [ ] Add pre-checks
+  - [ ] On clean release branch?
+  - [ ] Valid npm login/auth?
 
 ## Goals & Non-goals
 
