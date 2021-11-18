@@ -58,6 +58,7 @@ export class AppConfig {
                 alias: "A",
                 default: {},
                 desc: "Alias pkg names (old=new)",
+                group: "common",
             }),
         };
         this.setFormat(process.env.NO_COLOR ? FMT_NONE : FMT_ANSI16);

@@ -16,6 +16,7 @@ usage: ${APP_NAME} CMD [OPTS] ...
 `,
     groups: ["flags", "main", "common"],
     showGroupNames: true,
+    paramWidth: 36,
 };
 
 export class ArgParser {

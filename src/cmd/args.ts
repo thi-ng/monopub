@@ -34,6 +34,6 @@ export const ARG_OUT_DIR = {
     outDir: string({
         alias: "o",
         hint: "PATH",
-        desc: "Output root dir for changelogs (default: --repo-path)",
+        desc: "Output root dir (default: --repo-path)",
     }),
 };

@@ -74,13 +74,13 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
         ...ARG_DRY,
         ...ARG_DUMP_SPEC,
         changelogBranch: string({
-            alias: "script",
+            alias: "cb",
             hint: "NAME",
             default: DEFAULT_CHANGELOG_BRANCH,
             desc: "Remote Git branch for package links in changelog",
         }),
         releaseBranch: string({
-            alias: "script",
+            alias: "rb",
             hint: "NAME",
             default: DEFAULT_RELEASE_BRANCH,
             desc: "Remote branch name for publishing releases",
