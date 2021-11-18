@@ -4,7 +4,7 @@ import { resolve } from "path";
 import type { AppConfig } from "./config.js";
 import { readJSON } from "./io.js";
 import type { Logger } from "./logger.js";
-import { pkgShortName } from "./utils.js";
+import { pkgShortName } from "./model/package.js";
 
 export interface CLIOpts {
     /**

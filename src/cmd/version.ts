@@ -13,7 +13,7 @@ import type {
 import { readJSON, writeJSON } from "../io.js";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec } from "../model/api.js";
-import { pkgJsonPath, pkgShortName } from "../utils.js";
+import { pkgJsonPath, pkgShortName } from "../model/package.js";
 import { ARG_ALL, ARG_DRY, ARG_DUMP_SPEC, ARG_OUT_DIR } from "./args.js";
 import { buildReleaseSpecFromCtx } from "./common.js";
 

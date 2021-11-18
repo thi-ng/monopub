@@ -14,7 +14,7 @@ import {
 import { readJSON, writeJSON } from "../io.js";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec } from "../model/api.js";
-import { pkgJsonPath, pkgPath } from "../utils.js";
+import { pkgJsonPath, pkgPath } from "../model/package.js";
 import { ARG_ALL, ARG_CC_TYPES, ARG_DRY, ARG_DUMP_SPEC } from "./args.js";
 import { generateChangeLogs } from "./changelog.js";
 import { buildReleaseSpecFromCtx } from "./common.js";

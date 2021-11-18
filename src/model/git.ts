@@ -1,7 +1,7 @@
 import type { Pair } from "@thi.ng/api";
 import type { KVDict } from "@thi.ng/args";
 import { illegalState } from "@thi.ng/errors";
-import { transduce as $transduce } from "@thi.ng/rstream";
+import { linesFromNodeJS, transduce as $transduce } from "@thi.ng/rstream";
 import {
     assocObj,
     comp,
@@ -11,7 +11,6 @@ import {
     Transducer,
 } from "@thi.ng/transducers";
 import { spawn } from "child_process";
-import { linesFromNodeJS } from "../utils.js";
 import type { Commit, CommitHistoryOpts, RepoConfig } from "./api.js";
 import { isBreakingChangeMsg } from "./utils.js";
 

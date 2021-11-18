@@ -4,9 +4,9 @@ import { assert } from "@thi.ng/errors";
 import { conj, mapcat, partitionWhen, transduce } from "@thi.ng/transducers";
 import { readJSON, writeText } from "../io.js";
 import type { Logger } from "../logger.js";
-import { pkgJsonPath, pkgShortName } from "../utils.js";
 import type { ReleaseSpec, ReleaseSpecOpts } from "./api.js";
 import { commitsSinceLastPublish } from "./git.js";
+import { pkgJsonPath, pkgShortName } from "./package.js";
 import { isPublish } from "./utils.js";
 import { classifyVersionBump, versionBump } from "./version.js";
 
