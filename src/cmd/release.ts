@@ -50,6 +50,7 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
         );
         logSep(logger);
         applyVersionBumps(opts, spec, logger);
+        updateYarnLock(ctx);
         logSep(logger);
         gitCommit(ctx, spec);
         logSep(logger);
@@ -103,7 +104,7 @@ const execInRepo = (
     cmd: string,
     ...args: string[]
 ) => {
-    ctx.logger.debug(...[cmd, ...args]);
+    ctx.logger.debug(cmd, ...args);
     return execFileSync(cmd, args, { cwd: ctx.opts.repoPath });
 };
 
@@ -116,6 +117,7 @@ const gitCommit = (ctx: CommandCtx<ReleaseOpts>, spec: ReleaseSpec) => {
         "git",
         "add",
         "-f",
+        "yarn.lock",
         ...Object.keys(spec.nextVersions).map(
             (x) => `${opts.root}/${x}/CHANGELOG.md`
         )
@@ -171,4 +173,9 @@ const publishPackages = (
                 cwd: pkgPath(opts.repoPath, opts.root, id),
             });
     }
+};
+
+const updateYarnLock = (ctx: CommandCtx<ReleaseOpts>) => {
+    ctx.logger.info("update yarn.lock file");
+    execInRepo(ctx, "yarn", "install");
 };

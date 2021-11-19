@@ -21,7 +21,8 @@ Currently implemented:
 - [x] Repo/publish config via dotenv
 - [x] Update package files w/ version bumps
   - [x] Update/bump deps in transitive dependents
-- [x] Commit updated package & changelog files
+  - [x] Update yarn.lock prior to 'publish' commit
+- [x] Commit updated package, yarn.lock & changelog files
 - [x] Create & add release tags
 - [x] Push to git remote
 - [x] Inject `gitHead` into published pkg.json files
