@@ -27,5 +27,5 @@ export const writeJSON = (
     logger.dry(dry, "writing JSON:", path);
     if (dry) return;
     ensureDirectoryForFile(path);
-    writeFileSync(path, JSON.stringify(body, null, 4), "utf-8");
+    writeFileSync(path, JSON.stringify(body, null, 4) + "\n", "utf-8");
 };
