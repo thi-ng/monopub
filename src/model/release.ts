@@ -1,8 +1,9 @@
 import type { IObjectOf } from "@thi.ng/api";
 import { defDGraph } from "@thi.ng/dgraph";
 import { assert } from "@thi.ng/errors";
+import { readJSON } from "@thi.ng/file-io";
 import { conj, mapcat, partitionWhen, transduce } from "@thi.ng/transducers";
-import { readJSON, writeText } from "../io.js";
+import { writeText } from "../io.js";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec, ReleaseSpecOpts } from "./api.js";
 import { commitsSinceLastPublish } from "./git.js";

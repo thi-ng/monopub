@@ -1,4 +1,5 @@
 import { Args, string } from "@thi.ng/args";
+import { readJSON } from "@thi.ng/file-io";
 import { execFileSync } from "child_process";
 import {
     AllPkgOpts,
@@ -11,7 +12,7 @@ import {
     DryRunOpts,
     DumpSpecOpts,
 } from "../api.js";
-import { readJSON, writeJSON } from "../io.js";
+import { writeJSON } from "../io.js";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec } from "../model/api.js";
 import { pkgJsonPath, pkgPath } from "../model/package.js";

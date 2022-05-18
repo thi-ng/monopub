@@ -1,6 +1,7 @@
 import type { IObjectOf } from "@thi.ng/api";
 import type { Args } from "@thi.ng/args";
 import { assert } from "@thi.ng/errors";
+import { readJSON } from "@thi.ng/file-io";
 import { resolve } from "path";
 import type {
     AllPkgOpts,
@@ -10,7 +11,7 @@ import type {
     DumpSpecOpts,
     OutDirOpts,
 } from "../api";
-import { readJSON, writeJSON } from "../io.js";
+import { writeJSON } from "../io.js";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec } from "../model/api.js";
 import { pkgJsonPath, pkgShortName } from "../model/package.js";
