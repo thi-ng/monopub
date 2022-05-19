@@ -1,7 +1,7 @@
 import type { IObjectOf } from "@thi.ng/api";
 import type { Args } from "@thi.ng/args";
 import { assert } from "@thi.ng/errors";
-import { readJSON } from "@thi.ng/file-io";
+import { readJSON, writeJSON } from "@thi.ng/file-io";
 import { resolve } from "path";
 import type {
     AllPkgOpts,
@@ -11,7 +11,6 @@ import type {
     DumpSpecOpts,
     OutDirOpts,
 } from "../api";
-import { writeJSON } from "../io.js";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec } from "../model/api.js";
 import { pkgJsonPath, pkgShortName } from "../model/package.js";
@@ -62,7 +61,14 @@ export const applyVersionBumps = (
             updateDeps(opts.scope, pkg.dependencies, spec, logger);
         pkg.devDependencies &&
             updateDeps(opts.scope, pkg.devDependencies, spec, logger);
-        writeJSON(pkgJsonPath(dest, opts.root, id), pkg, logger, opts.dryRun);
+        writeJSON(
+            pkgJsonPath(dest, opts.root, id),
+            pkg,
+            null,
+            4,
+            logger,
+            opts.dryRun
+        );
     }
 };
 

@@ -147,10 +147,10 @@
   resolved "https://registry.yarnpkg.com/@thi.ng/errors/-/errors-2.1.6.tgz#737f3a6d7be36ccd7680b6f6e81efb1ff2f6d5ba"
   integrity sha512-obHt1Ji3vkU5yitnA1ehLpENwbA5ZUyBUswmY0W5sb3NymfRqgOgZRhTlV4I/dlECPbF8Y2VJdM0LlPS+XJ7yQ==
 
-"@thi.ng/file-io@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@thi.ng/file-io/-/file-io-0.1.0.tgz#36550bc04d0d2ffb3c13fd3f25166fb5281b1dde"
-  integrity sha512-6U6lQHwNRETDJpUEEkt6z61tSWat1VnrbV6dibVVw9UJ7QjItJ4YISO/4dSWmr3AzTpFQE9lJNjiHqG11J2EZA==
+"@thi.ng/file-io@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@thi.ng/file-io/-/file-io-0.2.0.tgz#6f6eb95469ef23e3196516c06c57697b53460aa9"
+  integrity sha512-WzcqxNl6fl/kNIMrT6k2Gjh9gPVSnZ1LQ+5yXkg3mQ9J/ekWkR8otcYFng0beGfAa0J7KzW4yonZBypmOkAhOw==
   dependencies:
     "@thi.ng/api" "^8.3.6"
     "@thi.ng/checks" "^3.1.6"

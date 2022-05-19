@@ -1,5 +1,5 @@
 import { Args, string } from "@thi.ng/args";
-import { readJSON } from "@thi.ng/file-io";
+import { readJSON, writeJSON } from "@thi.ng/file-io";
 import { execFileSync } from "child_process";
 import {
     AllPkgOpts,
@@ -12,7 +12,6 @@ import {
     DryRunOpts,
     DumpSpecOpts,
 } from "../api.js";
-import { writeJSON } from "../io.js";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec } from "../model/api.js";
 import { pkgJsonPath, pkgPath } from "../model/package.js";
@@ -158,7 +157,7 @@ const injectGitHead = (ctx: CommandCtx<ReleaseOpts>, spec: ReleaseSpec) => {
         const path = pkgJsonPath(opts.repoPath, opts.root, id);
         const pkg = readJSON(path);
         pkg.gitHead = gitHead;
-        writeJSON(path, pkg, logger, opts.dryRun);
+        writeJSON(path, pkg, null, 4, logger, opts.dryRun);
     }
 };
 

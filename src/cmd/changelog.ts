@@ -1,5 +1,6 @@
 import { Args, string } from "@thi.ng/args";
 import { dateTime, FMT_ISO_SHORT } from "@thi.ng/date";
+import { writeText } from "@thi.ng/file-io";
 import { comp, filter, groupByObj, transduce } from "@thi.ng/transducers";
 import { resolve } from "path";
 import {
@@ -12,7 +13,6 @@ import {
     DumpSpecOpts,
     OutDirOpts,
 } from "../api.js";
-import { writeText } from "../io.js";
 import type { Logger } from "../logger.js";
 import {
     CHANGELOG_TYPE_LABELS,

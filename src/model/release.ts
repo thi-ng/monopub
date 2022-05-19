@@ -1,9 +1,8 @@
 import type { IObjectOf } from "@thi.ng/api";
 import { defDGraph } from "@thi.ng/dgraph";
 import { assert } from "@thi.ng/errors";
-import { readJSON } from "@thi.ng/file-io";
+import { readJSON, writeJSON } from "@thi.ng/file-io";
 import { conj, mapcat, partitionWhen, transduce } from "@thi.ng/transducers";
-import { writeText } from "../io.js";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec, ReleaseSpecOpts } from "./api.js";
 import { commitsSinceLastPublish } from "./git.js";
@@ -63,17 +62,15 @@ export const buildReleaseSpec = async (
         }
     }
     if (opts.dump) {
-        writeText(
+        writeJSON(
             opts.dump,
-            JSON.stringify(
-                {
-                    ...spec,
-                    touched: [...spec.touched].sort(),
-                    graph: [...spec.graph],
-                },
-                null,
-                4
-            ),
+            {
+                ...spec,
+                touched: [...spec.touched].sort(),
+                graph: [...spec.graph],
+            },
+            null,
+            4,
             logger
         );
     }
