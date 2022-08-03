@@ -1,4 +1,4 @@
-import type { IObjectOf } from "@thi.ng/api";
+import type { IObjectOf, NumOrString } from "@thi.ng/api";
 import type { KVDict } from "@thi.ng/args";
 import type { DGraph } from "@thi.ng/dgraph";
 
@@ -82,6 +82,7 @@ export interface CommitHistoryOpts extends RepoConfig {
 
 export interface ReleaseSpecOpts extends CommitHistoryOpts {
 	dump?: string;
+	indent: NumOrString;
 }
 
 export interface ReleaseSpec {

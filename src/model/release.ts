@@ -70,7 +70,7 @@ export const buildReleaseSpec = async (
 				graph: [...spec.graph],
 			},
 			null,
-			"\t",
+			opts.indent,
 			logger
 		);
 	}

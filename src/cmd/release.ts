@@ -157,7 +157,7 @@ const injectGitHead = (ctx: CommandCtx<ReleaseOpts>, spec: ReleaseSpec) => {
 		const path = pkgJsonPath(opts.repoPath, opts.root, id);
 		const pkg = readJSON(path);
 		pkg.gitHead = gitHead;
-		writeJSON(path, pkg, null, "\t", logger, opts.dryRun);
+		writeJSON(path, pkg, null, opts.indent, logger, opts.dryRun);
 	}
 };
 

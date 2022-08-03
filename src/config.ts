@@ -1,4 +1,5 @@
-import { Args, kvPairs, string, strings } from "@thi.ng/args";
+import { Args, kvPairs, oneOf, string, strings } from "@thi.ng/args";
+import { illegalArgs } from "@thi.ng/errors";
 import type { LogLevelName } from "@thi.ng/logger";
 import {
 	defFormatPresets,
@@ -59,6 +60,18 @@ export class AppConfig {
 				default: {},
 				desc: "Alias pkg names (old=new)",
 				group: "common",
+			}),
+			indent: oneOf(["number", "tab"], {
+				default: "\t",
+				hint: "VAL",
+				desc: "Indentation for generated JSON files",
+				group: "common",
+				coerce: (x) => {
+					if (x === "tab") return "\t";
+					const y = parseInt(x);
+					if (isNaN(y) || y < 0) illegalArgs("invalid indent");
+					return y;
+				},
 			}),
 		};
 		this.setFormat(process.env.NO_COLOR ? FMT_NONE : FMT_ANSI16);

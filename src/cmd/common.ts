@@ -1,4 +1,4 @@
-import type { CommandCtx } from "../api";
+import type { CommandCtx } from "../api.js";
 import { buildReleaseSpec } from "../model/release.js";
 
 export const buildReleaseSpecFromCtx = ({ logger, opts }: CommandCtx<any>) =>
@@ -12,6 +12,7 @@ export const buildReleaseSpecFromCtx = ({ logger, opts }: CommandCtx<any>) =>
 			alias: opts.alias,
 			all: opts.all,
 			dump: opts.dumpSpec,
+			indent: opts.indent,
 		},
 		logger
 	);

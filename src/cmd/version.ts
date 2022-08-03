@@ -65,7 +65,7 @@ export const applyVersionBumps = (
 			pkgJsonPath(dest, opts.root, id),
 			pkg,
 			null,
-			"\t",
+			opts.indent,
 			logger,
 			opts.dryRun
 		);

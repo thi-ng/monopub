@@ -1,4 +1,4 @@
-import type { Fn } from "@thi.ng/api";
+import type { Fn, NumOrString } from "@thi.ng/api";
 import type { Args, KVDict } from "@thi.ng/args";
 import { readJSON } from "@thi.ng/file-io";
 import { resolve } from "path";
@@ -31,6 +31,10 @@ export interface CLIOpts {
 	 * Same as {@link RepoConfig.alias}
 	 */
 	alias: KVDict;
+	/**
+	 * Indentation for generated JSON files
+	 */
+	indent: NumOrString;
 }
 
 export interface AllPkgOpts {
