@@ -5,9 +5,9 @@ import { RELEASE } from "./cmd/release.js";
 import { VERSION } from "./cmd/version.js";
 
 export class CommandRegistry {
-    registry: IObjectOf<CommandSpec<any>> = {
-        changelog: CHANGELOG,
-        release: RELEASE,
-        version: VERSION,
-    };
+	registry: IObjectOf<CommandSpec<any>> = {
+		changelog: CHANGELOG,
+		release: RELEASE,
+		version: VERSION,
+	};
 }

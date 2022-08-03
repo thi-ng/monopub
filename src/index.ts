@@ -9,49 +9,49 @@ import { Logger } from "./logger.js";
 import { ArgParser } from "./parser.js";
 
 interface App {
-    args: ArgParser;
-    commands: CommandRegistry;
-    config: AppConfig;
-    ctx: AppContext<any>;
-    logger: Logger;
+	args: ArgParser;
+	commands: CommandRegistry;
+	config: AppConfig;
+	ctx: AppContext<any>;
+	logger: Logger;
 }
 
 config();
 
 (async () => {
-    // main app
-    const APP = defSystem<App>({
-        config: {
-            factory: () => new AppConfig(),
-        },
-        logger: {
-            factory: ({ config }) =>
-                new Logger(
-                    config,
-                    APP_NAME,
-                    LogLevel[<LogLevelName>config.logLevel]
-                ),
-            deps: ["config"],
-        },
-        commands: {
-            factory: () => new CommandRegistry(),
-        },
-        args: {
-            factory: ({ logger, config, commands }) =>
-                new ArgParser(logger, config, commands),
-            deps: ["config", "logger", "commands"],
-        },
-        ctx: {
-            factory: ({ logger, config, args }) =>
-                new AppContext(config, logger, args),
-            deps: ["config", "logger", "args"],
-        },
-    });
+	// main app
+	const APP = defSystem<App>({
+		config: {
+			factory: () => new AppConfig(),
+		},
+		logger: {
+			factory: ({ config }) =>
+				new Logger(
+					config,
+					APP_NAME,
+					LogLevel[<LogLevelName>config.logLevel]
+				),
+			deps: ["config"],
+		},
+		commands: {
+			factory: () => new CommandRegistry(),
+		},
+		args: {
+			factory: ({ logger, config, commands }) =>
+				new ArgParser(logger, config, commands),
+			deps: ["config", "logger", "commands"],
+		},
+		ctx: {
+			factory: ({ logger, config, args }) =>
+				new AppContext(config, logger, args),
+			deps: ["config", "logger", "args"],
+		},
+	});
 
-    try {
-        await APP.start();
-    } catch (e) {
-        APP.components.logger.severe((<Error>e).message);
-        // console.log(e);
-    }
+	try {
+		await APP.start();
+	} catch (e) {
+		APP.components.logger.severe((<Error>e).message);
+		// console.log(e);
+	}
 })();

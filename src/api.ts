@@ -7,73 +7,73 @@ import type { Logger } from "./logger.js";
 import { pkgShortName } from "./model/package.js";
 
 export interface CLIOpts {
-    /**
-     * Same as {@link RepoConfig.path}
-     */
-    repoPath: string;
-    /**
-     * Same as {@link RepoConfig.url}
-     */
-    repoUrl: string;
-    /**
-     * Same as {@link RepoConfig.scope}
-     */
-    scope: string;
-    /**
-     * Same as {@link RepoConfig.pkgRoot}
-     */
-    root: string;
-    /**
-     * Same as {@link RepoConfig.fileExt}
-     */
-    ext: string[];
-    /**
-     * Same as {@link RepoConfig.alias}
-     */
-    alias: KVDict;
+	/**
+	 * Same as {@link RepoConfig.path}
+	 */
+	repoPath: string;
+	/**
+	 * Same as {@link RepoConfig.url}
+	 */
+	repoUrl: string;
+	/**
+	 * Same as {@link RepoConfig.scope}
+	 */
+	scope: string;
+	/**
+	 * Same as {@link RepoConfig.pkgRoot}
+	 */
+	root: string;
+	/**
+	 * Same as {@link RepoConfig.fileExt}
+	 */
+	ext: string[];
+	/**
+	 * Same as {@link RepoConfig.alias}
+	 */
+	alias: KVDict;
 }
 
 export interface AllPkgOpts {
-    all: boolean;
+	all: boolean;
 }
 
 export interface CCTypeOpts {
-    ccTypes: string[];
+	ccTypes: string[];
 }
 
 export interface DryRunOpts {
-    dryRun: boolean;
+	dryRun: boolean;
 }
 
 export interface DumpSpecOpts {
-    dumpSpec?: string;
+	dumpSpec?: string;
 }
 
 export interface OutDirOpts {
-    outDir?: string;
+	outDir?: string;
 }
 
 export interface CommandSpec<T extends CLIOpts> {
-    /**
-     * Actual command implementation
-     */
-    fn: Fn<CommandCtx<T>, Promise<void>>;
-    /**
-     * Command specific CLI arg specs
-     */
-    opts: Args<T>;
-    /**
-     * Usage string for command overview.
-     */
-    usage: string;
+	/**
+	 * Actual command implementation
+	 */
+	fn: Fn<CommandCtx<T>, Promise<void>>;
+	/**
+	 * Command specific CLI arg specs
+	 */
+	opts: Args<T>;
+	/**
+	 * Usage string for command overview.
+	 */
+	usage: string;
 }
 
 export interface CommandCtx<T extends CLIOpts> {
-    cmd: CommandSpec<T>;
-    config: AppConfig;
-    logger: Logger;
-    opts: T;
-    rest: string[];
+	cmd: CommandSpec<T>;
+	config: AppConfig;
+	logger: Logger;
+	opts: T;
+	rest: string[];
 }
 
 export const INSTALL_DIR = resolve(`${process.argv[2]}/..`);
