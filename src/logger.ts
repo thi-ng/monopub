@@ -8,24 +8,24 @@ export class Logger extends ConsoleLogger {
 
 	dry(isDry: boolean, ...args: any[]) {
 		this.level <= LogLevel.INFO &&
-			this.log("INFO", isDry ? ["[dryrun]", ...args] : args);
+			this.log(LogLevel.INFO, isDry ? ["[dryrun]", ...args] : args);
 	}
 
 	important(...args: any[]) {
-		this.level <= LogLevel.NONE && this.log("INFO", args);
+		this.level <= LogLevel.NONE && this.log(LogLevel.INFO, args);
 	}
 
-	protected log(level: string, args: any[]) {
-		let msg = `[${level}] ${this.id}: ${args.join(" ")}\n`;
+	protected log(level: LogLevel, args: any[]) {
+		let msg = `[${LogLevel[level]}] ${this.id}: ${args.join(" ")}\n`;
 		const theme = this.config.theme;
 		switch (level) {
-			case "INFO":
+			case LogLevel.INFO:
 				msg = theme.lightYellow(msg);
 				break;
-			case "WARN":
+			case LogLevel.WARN:
 				msg = theme.lightRed(msg);
 				break;
-			case "SEVERE":
+			case LogLevel.SEVERE:
 				msg = theme.red(msg);
 				break;
 			default:
