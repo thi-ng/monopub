@@ -165,9 +165,14 @@ const publishPackages = (
 	{ opts, logger }: CommandCtx<ReleaseOpts>,
 	spec: ReleaseSpec
 ) => {
-	for (let id of [...spec.graph]) {
-		if (!spec.nextVersions[id]) continue;
-		logger.dry(opts.dryRun, `publishing pkg: ${opts.scope}/${id}`);
+	const packages = [...spec.graph].filter((id) => spec.nextVersions[id]);
+	const num = packages.length;
+	for (let i = 0; i < packages.length; i++) {
+		const id = packages[i];
+		logger.dry(
+			opts.dryRun,
+			`(${i + 1} / ${num}) publishing pkg: ${opts.scope}/${id}`
+		);
 		!opts.dryRun &&
 			execFileSync("yarn", ["run", opts.publishScript], {
 				cwd: pkgPath(opts.repoPath, opts.root, id),
