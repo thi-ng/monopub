@@ -1,4 +1,5 @@
 import { Args, string } from "@thi.ng/args";
+import { compareByKey } from "@thi.ng/compare";
 import { dateTime, FMT_ISO_SHORT } from "@thi.ng/date";
 import { writeText } from "@thi.ng/file-io";
 import { comp, filter, groupByObj, transduce } from "@thi.ng/transducers";
@@ -160,7 +161,7 @@ const changeLogForPackage = (
 			groupByObj<Commit, Commit[]>({
 				key: (x) => (x.breaking ? "break" : x.type),
 			}),
-			commits
+			commits.slice().sort(compareByKey("date"))
 		);
 		if (!Object.keys(entryGroups).length) {
 			first = false;
