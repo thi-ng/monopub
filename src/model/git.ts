@@ -21,7 +21,7 @@ const parseTags = (src: string, scope: string) => {
 	let match: RegExpExecArray | null;
 	while ((match = re.exec(src))) {
 		tags.push(
-			<Pair<string, string>>match[1].substr(prefix.length).split("@")
+			<Pair<string, string>>match[1].substring(prefix.length).split("@")
 		);
 	}
 	return assocObj(tags);
@@ -35,7 +35,7 @@ type ParseCommitOpts = Required<
  * Transducer consuming lines from `git log` and parsing/grouping them into
  * {@link Commit} objects. Used by {@link commitsSinceLastPublish}.
  *
- * @param scope
+ * @param opts
  */
 export const parseCommit =
 	(opts: ParseCommitOpts): Transducer<string, Commit> =>
@@ -98,7 +98,7 @@ export const parseCommit =
 								}
 							}
 						} else {
-							line = line.substr(4);
+							line = line.substring(4);
 							if (line.length) {
 								if (!commit.title) {
 									match = reConventionalCommit.exec(line);

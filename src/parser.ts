@@ -106,7 +106,7 @@ const commandUsagePrefix = (
 
 export const firstSentence = (x: string) => {
 	const idx = x.indexOf(".");
-	return idx > 0 ? x.substr(0, idx) : x;
+	return idx > 0 ? x.substring(0, idx) : x;
 };
 
 export const highlightArgs = (x: string, theme: FormatPresets) =>

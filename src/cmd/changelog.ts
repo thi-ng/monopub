@@ -176,14 +176,14 @@ const changeLogForPackage = (
 				opts,
 				id,
 				version
-			)}) (${date.substr(0, 10)})\n`
+			)}) (${date.substring(0, 10)})\n`
 		);
 		for (let type of CHANGELOG_TYPE_ORDER) {
 			const group = entryGroups[type];
 			if (!group) continue;
 			changelog.push(`#### ${CHANGELOG_TYPE_LABELS[type]}\n`);
 			for (let e of group) {
-				const sha = e.sha.substr(0, 7);
+				const sha = e.sha.substring(0, 7);
 				changelog.push(
 					`- ${formatGFM(opts, e.title)} (${commitLink(opts, sha)})`
 				);
@@ -203,7 +203,7 @@ const changeLogForPackage = (
  * - commit SHA1s
  * - scoped package names
  *
- * @param repoUrl
+ * @param opts
  * @param line
  */
 const formatGFM = (opts: ChangelogOpts, line: string) => {
@@ -214,7 +214,7 @@ const formatGFM = (opts: ChangelogOpts, line: string) => {
 		? line.replace(
 				new RegExp(
 					`@?${opts.scope
-						.substr(1)
+						.substring(1)
 						.replace(".", "\\.")}/([a-z0-9_-]+)`,
 					"g"
 				),
