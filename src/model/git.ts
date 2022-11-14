@@ -1,30 +1,24 @@
-import type { Pair } from "@thi.ng/api";
+import type { IObjectOf, Pair } from "@thi.ng/api";
 import type { KVDict } from "@thi.ng/args";
 import { illegalState } from "@thi.ng/errors";
 import { linesFromNodeJS, transduce as $transduce } from "@thi.ng/rstream";
-import {
-	assocObj,
-	comp,
-	filter,
-	push,
-	Reducer,
-	Transducer,
-} from "@thi.ng/transducers";
+import { comp, filter, push, Reducer, Transducer } from "@thi.ng/transducers";
 import { spawn } from "child_process";
 import type { Commit, CommitHistoryOpts, RepoConfig } from "./api.js";
 import { isBreakingChangeMsg } from "./utils.js";
 
 const parseTags = (src: string, scope: string) => {
 	const re = /tag: ([@a-z0-9/.-]+)/g;
-	const tags: Pair<string, string>[] = [];
+	const tags: IObjectOf<string> = {};
 	const prefix = `refs/tags/${scope}/`;
 	let match: RegExpExecArray | null;
 	while ((match = re.exec(src))) {
-		tags.push(
-			<Pair<string, string>>match[1].substring(prefix.length).split("@")
+		const [pkg, version] = <Pair<string, string>>(
+			match[1].substring(prefix.length).split("@")
 		);
+		tags[pkg] = version;
 	}
-	return assocObj(tags);
+	return tags;
 };
 
 type ParseCommitOpts = Required<
