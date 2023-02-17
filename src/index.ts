@@ -52,6 +52,6 @@ config();
 		await APP.start();
 	} catch (e) {
 		APP.components.logger.severe((<Error>e).message);
-		// console.log(e);
+		console.log(e);
 	}
 })();
