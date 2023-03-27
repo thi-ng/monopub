@@ -1,8 +1,8 @@
 import type { IObjectOf } from "@thi.ng/api";
-import { DEFAULT_THEME, parse, usage, UsageOpts } from "@thi.ng/args";
+import { DEFAULT_THEME, parse, usage, type UsageOpts } from "@thi.ng/args";
 import { padRight, repeat, wordWrapLine } from "@thi.ng/strings";
 import type { FormatPresets } from "@thi.ng/text-format";
-import { APP_NAME, CommandCtx, CommandSpec, HEADER } from "./api.js";
+import { APP_NAME, HEADER, type CommandCtx, type CommandSpec } from "./api.js";
 import type { CommandRegistry } from "./commands.js";
 import type { AppConfig } from "./config.js";
 import type { Logger } from "./logger.js";

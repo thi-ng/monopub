@@ -1,16 +1,16 @@
-import { Args, string } from "@thi.ng/args";
+import { string, type Args } from "@thi.ng/args";
 import { readJSON, writeJSON } from "@thi.ng/file-io";
 import { execFileSync } from "child_process";
 import {
-	AllPkgOpts,
-	CCTypeOpts,
-	CLIOpts,
-	CommandCtx,
-	CommandSpec,
 	DEFAULT_CHANGELOG_BRANCH,
 	DEFAULT_RELEASE_BRANCH,
-	DryRunOpts,
-	DumpSpecOpts,
+	type AllPkgOpts,
+	type CCTypeOpts,
+	type CLIOpts,
+	type CommandCtx,
+	type CommandSpec,
+	type DryRunOpts,
+	type DumpSpecOpts,
 } from "../api.js";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec } from "../model/api.js";

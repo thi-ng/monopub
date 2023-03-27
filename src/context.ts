@@ -1,6 +1,11 @@
 import { assert } from "@thi.ng/errors";
 import { seconds } from "@thi.ng/strings";
-import { CLIOpts, CommandCtx, CommandSpec, REQUIRED } from "./api.js";
+import {
+	REQUIRED,
+	type CLIOpts,
+	type CommandCtx,
+	type CommandSpec,
+} from "./api.js";
 import type { AppConfig } from "./config.js";
 import type { Logger } from "./logger.js";
 import type { ArgParser } from "./parser.js";

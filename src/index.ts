@@ -1,4 +1,4 @@
-import { LogLevel, LogLevelName } from "@thi.ng/logger";
+import { LogLevel, type LogLevelName } from "@thi.ng/logger";
 import { defSystem } from "@thi.ng/system";
 import { config } from "dotenv";
 import { APP_NAME } from "./api.js";

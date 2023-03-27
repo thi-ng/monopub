@@ -1,26 +1,26 @@
-import { Args, string } from "@thi.ng/args";
+import { string, type Args } from "@thi.ng/args";
 import { compareByKey } from "@thi.ng/compare";
-import { dateTime, FMT_ISO_SHORT } from "@thi.ng/date";
+import { FMT_ISO_SHORT, dateTime } from "@thi.ng/date";
 import { writeText } from "@thi.ng/file-io";
 import { comp, filter, groupByObj, transduce } from "@thi.ng/transducers";
 import { resolve } from "path";
 import {
-	AllPkgOpts,
-	CCTypeOpts,
-	CLIOpts,
-	CommandSpec,
 	DEFAULT_CHANGELOG_BRANCH,
-	DryRunOpts,
-	DumpSpecOpts,
-	OutDirOpts,
+	type AllPkgOpts,
+	type CCTypeOpts,
+	type CLIOpts,
+	type CommandSpec,
+	type DryRunOpts,
+	type DumpSpecOpts,
+	type OutDirOpts,
 } from "../api.js";
 import type { Logger } from "../logger.js";
 import {
 	CHANGELOG_TYPE_LABELS,
 	CHANGELOG_TYPE_ORDER,
-	Commit,
-	ConventionalCommitType,
-	ReleaseSpec,
+	type Commit,
+	type ConventionalCommitType,
+	type ReleaseSpec,
 } from "../model/api.js";
 import { isBreakingChangeMsg } from "../model/utils.js";
 import { classifyVersion } from "../model/version.js";

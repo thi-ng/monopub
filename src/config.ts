@@ -1,14 +1,14 @@
-import { Args, kvPairs, oneOf, string, strings } from "@thi.ng/args";
+import { kvPairs, oneOf, string, strings, type Args } from "@thi.ng/args";
 import { illegalArgs } from "@thi.ng/errors";
 import type { LogLevelName } from "@thi.ng/logger";
 import {
-	defFormatPresets,
 	FMT_ANSI16,
 	FMT_NONE,
-	FormatPresets,
-	StringFormat,
+	defFormatPresets,
+	type FormatPresets,
+	type StringFormat,
 } from "@thi.ng/text-format";
-import { CLIOpts, REQUIRED } from "./api.js";
+import { REQUIRED, type CLIOpts } from "./api.js";
 
 export class AppConfig {
 	logLevel: LogLevelName;
