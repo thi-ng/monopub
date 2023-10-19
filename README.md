@@ -10,36 +10,46 @@ Early stage MVP - not much to see yet...
 
 Currently implemented:
 
-- [x] Detailed Git commit parsing, filtering & analysis
-  - [x] Filter by file ext
-  - [x] Package name aliases (to assign commits from old pkg names)
-- [x] Computing packages touched by recent commits (or allow forcing all)
-- [x] Dependency graph construction for monorepo internal packages (incl. topological sort)
-- [x] Computing new package versions (based on Conventional Commit types used)
-- [x] Selective changelog creation (as Markdown files)
-  - [x] Commit type config
-- [x] Repo/publish config via dotenv
-- [x] Update package files w/ version bumps
-  - [x] Update/bump deps in transitive dependents
-  - [x] Update yarn.lock prior to 'publish' commit
-- [x] Commit updated package, yarn.lock & changelog files
-- [x] Create & add release tags
-- [x] Push to git remote
-- [x] Inject `gitHead` into published pkg.json files
-- [x] Publish to registry
-- [x] Reset git head post-publish
-- [ ] Add pre-checks
-  - [ ] On clean release branch?
-  - [ ] Valid npm login/auth?
+-   [x] Detailed Git commit parsing, filtering & analysis
+    -   [x] Filter by file ext
+    -   [x] Package name aliases (to assign commits from old pkg names)
+-   [x] Computing packages touched by recent commits (or allow forcing all)
+-   [x] Dependency graph construction for monorepo internal packages (incl. topological sort)
+-   [x] Computing new package versions (based on Conventional Commit types used)
+-   [x] Selective changelog creation (as Markdown files)
+    -   [x] Commit type config
+-   [x] Repo/publish config via dotenv
+-   [x] Update package files w/ version bumps
+    -   [x] Update/bump deps in transitive dependents
+    -   [x] Update yarn.lock prior to 'publish' commit
+-   [x] Commit updated package, yarn.lock & changelog files
+-   [x] Create & add release tags
+-   [x] Push to git remote
+-   [x] Inject `gitHead` into published pkg.json files
+-   [x] Publish to registry
+-   [x] Reset git head post-publish
+-   [ ] Add pre-checks
+    -   [ ] On clean release branch?
+    -   [ ] Valid npm login/auth?
 
 ## Goals & Non-goals
 
-The current aim of this project is to produce an as minimal as possible release
-workflow suitable for the [thi.ng/umbrella monorepo](https://thi.ng/umbrella)
-(160+ TypeScript packages). There will be configuration options to allow this
-tool to be used with other (similar) monorepo setups, however there's no desire
-to go down the usual route in JS-land of adding 100s of overly complicated
-options suitable for seemingly all use cases and then none...
+The original aim of this project was to produce an as minimal as possible
+release workflow suitable for the [thi.ng/umbrella
+monorepo](https://thi.ng/umbrella) (currently ~185 TypeScript
+projects/packages). For the past 2 years, this tool has been successfully and
+reliably used to handle ~150 releases (tens of thousands if you count individual
+package releases) and so I consider this goal reached. The tool is also a
+magnitude faster than my previous experience with Lerna. Version analysis,
+version bumping and changelog generation (all Conventional Commits based) for
+all packages in thi.ng/umbrella only takes ~2-3 seconds (max), unlike Lerna
+which regularly took 30+ secs for the same tasks (and produced worse
+changelogs)...
+
+There are configuration options to allow this project being used with other
+(similarly structured) monorepo setups, however there's no desire to go down the
+usual route in JS-land of adding 100s of overly complicated options suitable for
+seemingly all use cases and then none...
 
 ## Usage
 
@@ -140,4 +150,4 @@ Main:
 
 ## License
 
-&copy; 2021 Karsten Schmidt // Apache Software License 2.0
+&copy; 2021 - 2023 Karsten Schmidt // Apache Software License 2.0
