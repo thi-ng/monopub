@@ -57,6 +57,10 @@ export interface OutDirOpts {
 	outDir?: string;
 }
 
+export interface MaxRepeatOpts {
+	maxRepeat: number;
+}
+
 export interface CommandSpec<T extends CLIOpts> {
 	/**
 	 * Actual command implementation

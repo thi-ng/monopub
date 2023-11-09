@@ -1,4 +1,5 @@
 import { string, type Args } from "@thi.ng/args";
+import { delayed } from "@thi.ng/compose";
 import { readJSON, writeJSON } from "@thi.ng/file-io";
 import { execFileSync } from "child_process";
 import {
@@ -11,11 +12,18 @@ import {
 	type CommandSpec,
 	type DryRunOpts,
 	type DumpSpecOpts,
+	type MaxRepeatOpts,
 } from "../api.js";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec } from "../model/api.js";
 import { pkgJsonPath, pkgPath } from "../model/package.js";
-import { ARG_ALL, ARG_CC_TYPES, ARG_DRY, ARG_DUMP_SPEC } from "./args.js";
+import {
+	ARG_ALL,
+	ARG_CC_TYPES,
+	ARG_DRY,
+	ARG_DUMP_SPEC,
+	ARG_REPEAT,
+} from "./args.js";
 import { generateChangeLogs } from "./changelog.js";
 import { buildReleaseSpecFromCtx } from "./common.js";
 import { applyVersionBumps } from "./version.js";
@@ -25,7 +33,8 @@ export interface ReleaseOpts
 		AllPkgOpts,
 		CCTypeOpts,
 		DryRunOpts,
-		DumpSpecOpts {
+		DumpSpecOpts,
+		MaxRepeatOpts {
 	changelogBranch: string;
 	releaseBranch: string;
 	publishScript: string;
@@ -60,7 +69,7 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 		logSep(logger);
 		injectGitHead(ctx, spec);
 		logSep(logger);
-		publishPackages(ctx, spec);
+		await publishPackages(ctx, spec);
 		logSep(logger);
 		gitReset(ctx);
 		logger.info(
@@ -74,6 +83,7 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 		...ARG_CC_TYPES,
 		...ARG_DRY,
 		...ARG_DUMP_SPEC,
+		...ARG_REPEAT,
 		changelogBranch: string({
 			alias: "cb",
 			hint: "NAME",
@@ -161,7 +171,7 @@ const injectGitHead = (ctx: CommandCtx<ReleaseOpts>, spec: ReleaseSpec) => {
 	}
 };
 
-const publishPackages = (
+const publishPackages = async (
 	{ opts, logger }: CommandCtx<ReleaseOpts>,
 	spec: ReleaseSpec
 ) => {
@@ -173,10 +183,30 @@ const publishPackages = (
 			opts.dryRun,
 			`(${i + 1} / ${num}) publishing pkg: ${opts.scope}/${id}`
 		);
-		!opts.dryRun &&
-			execFileSync("yarn", ["run", opts.publishScript], {
-				cwd: pkgPath(opts.repoPath, opts.root, id),
-			});
+		if (!opts.dryRun) {
+			for (let k = 0; k < opts.maxRepeat; k++) {
+				try {
+					execFileSync("yarn", ["run", opts.publishScript], {
+						cwd: pkgPath(opts.repoPath, opts.root, id),
+					});
+					break;
+				} catch (e) {
+					logger.warn((<Error>e).message);
+					if (k < opts.maxRepeat - 1) {
+						logger.info(
+							"waiting for ",
+							1 << k,
+							"second(s) before retrying..."
+						);
+						await delayed(null, 1 << k);
+					} else {
+						throw new Error(
+							"reached max. number of publish attempts, giving up..."
+						);
+					}
+				}
+			}
+		}
 	}
 };
 

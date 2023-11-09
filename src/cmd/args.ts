@@ -1,6 +1,7 @@
-import { flag, oneOfMulti, string } from "@thi.ng/args";
+import { coerceInt, flag, int, oneOfMulti, string } from "@thi.ng/args";
 import { DEFAULT_CC_TYPES } from "../api.js";
 import { CHANGELOG_TYPE_ORDER } from "../model/api.js";
+import { illegalArgs } from "@thi.ng/errors";
 
 export const ARG_ALL = {
 	all: flag({
@@ -35,5 +36,18 @@ export const ARG_OUT_DIR = {
 		alias: "o",
 		hint: "PATH",
 		desc: "Output root dir (default: --repo-path)",
+	}),
+};
+
+export const ARG_REPEAT = {
+	maxRepeat: int({
+		desc: "Max attempts",
+		default: 3,
+		coerce: (x: string) => {
+			const val = coerceInt(x);
+			return val > 0 && val < 32
+				? val
+				: illegalArgs("value must be in [1..31] range");
+		},
 	}),
 };
