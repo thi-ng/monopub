@@ -198,7 +198,7 @@ const publishPackages = async (
 							1 << k,
 							"second(s) before retrying..."
 						);
-						await delayed(null, 1 << k);
+						await delayed(null, (1 << k) * 1000);
 					} else {
 						throw new Error(
 							"reached max. number of publish attempts, giving up..."
