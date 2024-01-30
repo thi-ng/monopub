@@ -172,9 +172,10 @@ const injectGitHead = (ctx: CommandCtx<ReleaseOpts>, spec: ReleaseSpec) => {
 };
 
 const publishPackages = async (
-	{ opts, logger }: CommandCtx<ReleaseOpts>,
+	ctx: CommandCtx<ReleaseOpts>,
 	spec: ReleaseSpec
 ) => {
+	const { opts, logger } = ctx;
 	const packages = [...spec.graph].filter((id) => spec.nextVersions[id]);
 	const num = packages.length;
 	for (let i = 0; i < packages.length; i++) {
@@ -200,6 +201,7 @@ const publishPackages = async (
 						);
 						await delayed(null, (1 << k) * 1000);
 					} else {
+						gitReset(ctx);
 						throw new Error(
 							"reached max. number of publish attempts, giving up..."
 						);
