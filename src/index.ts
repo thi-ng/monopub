@@ -22,10 +22,10 @@ config();
 	// main app
 	const APP = defSystem<App>({
 		config: {
-			factory: () => new AppConfig(),
+			factory: async () => new AppConfig(),
 		},
 		logger: {
-			factory: ({ config }) =>
+			factory: async ({ config }) =>
 				new Logger(
 					config,
 					APP_NAME,
@@ -34,15 +34,15 @@ config();
 			deps: ["config"],
 		},
 		commands: {
-			factory: () => new CommandRegistry(),
+			factory: async () => new CommandRegistry(),
 		},
 		args: {
-			factory: ({ logger, config, commands }) =>
+			factory: async ({ logger, config, commands }) =>
 				new ArgParser(logger, config, commands),
 			deps: ["config", "logger", "commands"],
 		},
 		ctx: {
-			factory: ({ logger, config, args }) =>
+			factory: async ({ logger, config, args }) =>
 				new AppContext(config, logger, args),
 			deps: ["config", "logger", "args"],
 		},
