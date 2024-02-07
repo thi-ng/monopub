@@ -45,8 +45,8 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 		const { opts, logger } = ctx;
 		// FIXME debug only
 		// opts.dryRun = true;
-		// TODO optionally check we're on main/release branch
-		// TODO optionally check `git status -s` and terminate if not clean
+		ensureReleaseBranch(ctx);
+		ensureRepoIsClean(ctx);
 		const spec = await buildReleaseSpecFromCtx(ctx);
 		generateChangeLogs(
 			{
@@ -116,6 +116,23 @@ const execInRepo = (
 ) => {
 	ctx.logger.debug(cmd, ...args);
 	return execFileSync(cmd, args, { cwd: ctx.opts.repoPath });
+};
+
+const ensureRepoIsClean = (ctx: CommandCtx<ReleaseOpts>) => {
+	try {
+		execInRepo(ctx, "git", "diff-index", "--quiet", "HEAD", "--");
+	} catch (e) {
+		throw new Error("Repo has uncommitted changes, aborting...");
+	}
+};
+
+const ensureReleaseBranch = (ctx: CommandCtx<ReleaseOpts>) => {
+	const branch = execInRepo(ctx, "git", "rev-parse", "--abbrev-ref", "HEAD")
+		.toString()
+		.trim();
+	if (branch !== ctx.opts.releaseBranch) {
+		throw new Error("Repo is currently not on release branch, aborting...");
+	}
 };
 
 const gitCommit = (ctx: CommandCtx<ReleaseOpts>, spec: ReleaseSpec) => {
