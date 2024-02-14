@@ -1,12 +1,12 @@
 # @thi.ng/monopub
 
-Lightweight & fast monorepo publish/release/changelog manager to automate
-releases using nothing more than [Conventional
+Lightweight, simple & fast monorepo publish/release/changelog manager to
+automate releases using nothing more than [Conventional
 Commits](https://conventionalcommits.org/).
 
 ## Status
 
-Early stage MVP - not much to see yet...
+**stable** - used in production
 
 Currently implemented:
 
@@ -21,35 +21,37 @@ Currently implemented:
 -   [x] Repo/publish config via dotenv
 -   [x] Update package files w/ version bumps
     -   [x] Update/bump deps in transitive dependents
-    -   [x] Update yarn.lock prior to 'publish' commit
+    -   [x] Update `yarn.lock` prior to 'publish' commit
 -   [x] Commit updated package, yarn.lock & changelog files
 -   [x] Create & add release tags
 -   [x] Push to git remote
--   [x] Inject `gitHead` into published pkg.json files
+-   [x] Inject `gitHead` into published `package.json` files
 -   [x] Publish to registry
 -   [x] Reset git head post-publish
--   [ ] Add pre-checks
-    -   [ ] On clean release branch?
+-   [x] Add pre-checks
+    -   [x] On clean release branch?
     -   [ ] Valid npm login/auth?
 
 ## Goals & Non-goals
 
 The original aim of this project was to produce an as minimal as possible
 release workflow suitable for the [thi.ng/umbrella
-monorepo](https://thi.ng/umbrella) (currently ~185 TypeScript
-projects/packages). For the past 2 years, this tool has been successfully and
-reliably used to handle ~150 releases (tens of thousands if you count individual
-package releases) and so I consider this goal reached. The tool is also a
-magnitude faster than my previous experience with Lerna. Version analysis,
-version bumping and changelog generation (all Conventional Commits based) for
-all packages in thi.ng/umbrella only takes ~2-3 seconds (max), unlike Lerna
-which regularly took 30+ secs for the same tasks (and produced worse
-changelogs)...
+monorepo](https://thi.ng/umbrella) (currently ~189 TypeScript
+projects/packages). Over the past 2+ years, this tool has been reliably used to
+handle ~180 releases (tens of thousands if you count individual package
+releases) and so I consider this goal reached. The tool is also a magnitude
+faster than my previous experience with Lerna. Version analysis, version bumping
+and changelog generation (all Conventional Commits based) for all ~190 packages
+in thi.ng/umbrella only takes ~2-3 seconds (max), unlike Lerna which regularly
+took 30+ secs for the same tasks (and produced worse changelogs)...
 
 There are configuration options to allow this project being used with other
 (similarly structured) monorepo setups, however there's no desire to go down the
 usual route in JS-land of adding 100s of overly complicated options suitable for
 seemingly all use cases and then none...
+
+If you're interested in utilizing this tool with your repo, but not sure how,
+please reach out via the issue tracker...
 
 ## Usage
 
@@ -67,7 +69,7 @@ bin/monopub --help
 ```text
  █ █   █           │
 ██ █               │
- █ █ █ █   █ █ █ █ │ @thi.ng/monopub 0.0.1
+ █ █ █ █   █ █ █ █ │ @thi.ng/monopub 1.0.0
  █ █ █ █ █ █ █ █ █ │ Monorepo publish/release/changelog manager
                  █ │
                █ █ │
@@ -86,6 +88,7 @@ Common:
 
 -A key=val, --alias key=val         [multiple] Alias pkg names (old=new) (default: {})
 --ext EXT                           [multiple] File types to consider for changes (comma separated) (default: [".+"])
+--indent VAL                        Indentation for generated JSON files: "number", "tab" (default: "\t")
 -p PATH, --repo-path PATH           Monorepo local path (default: "<missing>")
 -u URL, --repo-url URL              Monorepo remote URL (default: "<missing>")
 -r PATH, --root PATH                Relative package root dir in repo (default: "packages")
@@ -93,6 +96,10 @@ Common:
 ```
 
 ### Command: changelog
+
+> [!NOTE]
+> See various packages in the [thi.ng/umbrella](https://github.com/thi-ng/umbrella) monorepo for generated changelogs:
+> example [thi.ng/rstream changelog](https://github.com/thi-ng/umbrella/blob/develop/packages/rstream/CHANGELOG.md)
 
 Create/update changelogs
 
@@ -105,8 +112,9 @@ Flags:
 Main:
 
 -b NAME, --branch NAME              Remote Git branch for package links in changelog (default: "main")
--cc TYPE, --cc-types TYPE           [multiple] Only consider given Conventional Commit types for determining changes: "feat",
-                                    "fix", "perf", "refactor", "build", "docs", "chore" (default: ["feat","fix","refactor","perf"])
+-cc TYPE, --cc-types TYPE           [multiple] Only consider given Conventional Commit types for determining changes:
+                                    "feat", "fix", "perf", "refactor", "build", "docs", "chore" (default:
+                                    ["feat","fix","refactor","perf"])
 --dump-spec PATH                    Write release spec to JSON file
 -o PATH, --out-dir PATH             Output root dir (default: --repo-path)
 ```
@@ -139,11 +147,12 @@ Flags:
 
 Main:
 
--cc TYPE, --cc-types TYPE           [multiple] Only consider given Conventional Commit types for determining changes: "feat",
-                                    "fix", "perf", "refactor", "build", "docs", "chore" (default: ["feat","fix","refactor","pe
-                                    rf"])
+-cc TYPE, --cc-types TYPE           [multiple] Only consider given Conventional Commit types for determining changes:
+                                    "feat", "fix", "perf", "refactor", "build", "docs", "chore" (default:
+                                    ["feat","fix","refactor","perf"])
 -cb NAME, --changelog-branch NAME   Remote Git branch for package links in changelog (default: "main")
 --dump-spec PATH                    Write release spec to JSON file
+--max-repeat INT                    Max attempts (default: 3)
 -script CMD, --publish-script CMD   Publish script alias name (default: "pub")
 -rb NAME, --release-branch NAME     Remote branch name for publishing releases (default: "main")
 ```
