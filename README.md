@@ -155,6 +155,7 @@ Main:
 --max-repeat INT                    Max attempts (default: 3)
 -script CMD, --publish-script CMD   Publish script alias name (default: "pub")
 -rb NAME, --release-branch NAME     Remote branch name for publishing releases (default: "main")
+-t INT, --throttle INT              Delay time (in ms) between publishing each pkg (default: 0)
 ```
 
 ## License

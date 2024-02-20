@@ -1,5 +1,6 @@
-import { string, type Args } from "@thi.ng/args";
+import { coerceInt, int, string, type Args } from "@thi.ng/args";
 import { delayed } from "@thi.ng/compose";
+import { illegalArgs } from "@thi.ng/errors";
 import { readJSON, writeJSON } from "@thi.ng/file-io";
 import { execFileSync } from "child_process";
 import {
@@ -38,6 +39,7 @@ export interface ReleaseOpts
 	changelogBranch: string;
 	releaseBranch: string;
 	publishScript: string;
+	throttle: number;
 }
 
 export const RELEASE: CommandSpec<ReleaseOpts> = {
@@ -101,6 +103,15 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 			hint: "CMD",
 			default: "pub",
 			desc: "Publish script alias name",
+		}),
+		throttle: int({
+			alias: "t",
+			default: 0,
+			desc: "Delay time (in ms) between publishing each pkg",
+			coerce: (x: string) => {
+				const val = coerceInt(x);
+				return val >= 0 ? val : illegalArgs("value must be >= 0");
+			},
 		}),
 	},
 	usage: "Prepare and execute full release of all touched packages",
@@ -207,6 +218,7 @@ const publishPackages = async (
 					execFileSync("yarn", ["run", opts.publishScript], {
 						cwd: pkgPath(opts.repoPath, opts.root, id),
 					});
+					if (opts.throttle > 0) await delayed(null, opts.throttle);
 					break;
 				} catch (e) {
 					logger.warn((<Error>e).message);
