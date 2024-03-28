@@ -15,7 +15,7 @@ export const buildReleaseSpec = async (
 	logger: Logger
 ) => {
 	const commits = await commitsSinceLastPublish(opts);
-	assert(commits.length > 0, `no commits yet, exiting...`);
+	assert(commits.length > 0, `no new commits yet, exiting...`);
 	let groups = [...partitionWhen(isPublish, commits)];
 	const [unreleased, previous] = isPublish(groups[0][0])
 		? [[], groups]
