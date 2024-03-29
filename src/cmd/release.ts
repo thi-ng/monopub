@@ -210,7 +210,9 @@ const publishPackages = async (
 		const id = packages[i];
 		logger.dry(
 			opts.dryRun,
-			`(${i + 1} / ${num}) publishing pkg: ${opts.scope}/${id}`
+			`(${i + 1} / ${num}) publishing pkg: ${opts.scope}/${id}@${
+				spec.nextVersions[id]
+			}`
 		);
 		if (!opts.dryRun) {
 			for (let k = 0; k < opts.maxRepeat; k++) {
