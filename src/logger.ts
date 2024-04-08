@@ -1,4 +1,4 @@
-import { ConsoleLogger, LogLevel } from "@thi.ng/logger";
+import { ConsoleLogger, LogLevel, type LogEntry } from "@thi.ng/logger";
 import type { AppConfig } from "./config.js";
 
 export class Logger extends ConsoleLogger {
@@ -8,15 +8,21 @@ export class Logger extends ConsoleLogger {
 
 	dry(isDry: boolean, ...args: any[]) {
 		this.level <= LogLevel.INFO &&
-			this.log(LogLevel.INFO, isDry ? ["[dryrun]", ...args] : args);
+			this.logEntry([
+				LogLevel.INFO,
+				this.id,
+				Date.now(),
+				...(isDry ? ["[dryrun]", ...args] : args),
+			]);
 	}
 
 	important(...args: any[]) {
-		this.level <= LogLevel.NONE && this.log(LogLevel.INFO, args);
+		this.level <= LogLevel.NONE &&
+			this.logEntry([LogLevel.INFO, this.id, Date.now(), ...args]);
 	}
 
-	protected log(level: LogLevel, args: any[]) {
-		let msg = `[${LogLevel[level]}] ${this.id}: ${args.join(" ")}\n`;
+	logEntry([level, id, _, ...args]: LogEntry) {
+		let msg = `[${LogLevel[level]}] ${id}: ${args.join(" ")}\n`;
 		const theme = this.config.theme;
 		switch (level) {
 			case LogLevel.INFO:
