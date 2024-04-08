@@ -39,7 +39,7 @@ type ParseCommitOpts = Required<
  */
 export const parseCommit =
 	(opts: ParseCommitOpts): Transducer<string, Commit> =>
-	([init, complete, reduce]: Reducer<any, Commit>) => {
+	([init, complete, reduce]: Reducer<Commit, any>) => {
 		const reCommitHeader = /^commit ([a-f0-9]{40})(.*)/i;
 		const reCommitMeta = /^(author|date):\s+(.*)/i;
 		const reConventionalCommit = /^([a-z]+)(\([a-z0-9_-]+\))?:\s+(.+)/i;
