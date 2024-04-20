@@ -2,7 +2,7 @@ import type { IObjectOf } from "@thi.ng/api";
 import type { Args } from "@thi.ng/args";
 import { assert } from "@thi.ng/errors";
 import { readJSON, writeJSON } from "@thi.ng/file-io";
-import { resolve } from "path";
+import { resolve } from "node:path";
 import type {
 	AllPkgOpts,
 	CLIOpts,

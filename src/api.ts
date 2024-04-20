@@ -1,7 +1,7 @@
 import type { Fn, NumOrString } from "@thi.ng/api";
 import type { Args, KVDict } from "@thi.ng/args";
 import { readJSON } from "@thi.ng/file-io";
-import { resolve } from "path";
+import { resolve } from "node:path";
 import type { AppConfig } from "./config.js";
 import type { Logger } from "./logger.js";
 import { pkgShortName } from "./model/package.js";

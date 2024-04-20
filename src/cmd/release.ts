@@ -2,7 +2,7 @@ import { coerceInt, int, string, type Args } from "@thi.ng/args";
 import { delayed } from "@thi.ng/compose";
 import { illegalArgs } from "@thi.ng/errors";
 import { readJSON, writeJSON } from "@thi.ng/file-io";
-import { execFileSync } from "child_process";
+import { execFileSync } from "node:child_process";
 import {
 	DEFAULT_CHANGELOG_BRANCH,
 	DEFAULT_RELEASE_BRANCH,

@@ -3,7 +3,7 @@ import { compareByKey } from "@thi.ng/compare";
 import { FMT_ISO_SHORT, dateTime } from "@thi.ng/date";
 import { writeText } from "@thi.ng/file-io";
 import { comp, filter, groupByObj, transduce } from "@thi.ng/transducers";
-import { resolve } from "path";
+import { resolve } from "node:path";
 import {
 	DEFAULT_CHANGELOG_BRANCH,
 	type AllPkgOpts,

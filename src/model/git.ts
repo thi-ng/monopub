@@ -1,4 +1,4 @@
-import type { IObjectOf, Pair } from "@thi.ng/api";
+import type { IObjectOf, Maybe, Nullable, Pair } from "@thi.ng/api";
 import type { KVDict } from "@thi.ng/args";
 import { illegalState } from "@thi.ng/errors";
 import { transduce as $transduce, linesFromNodeJS } from "@thi.ng/rstream";
@@ -9,7 +9,7 @@ import {
 	type Reducer,
 	type Transducer,
 } from "@thi.ng/transducers";
-import { spawn } from "child_process";
+import { spawn } from "node:child_process";
 import type { Commit, CommitHistoryOpts, RepoConfig } from "./api.js";
 import { isBreakingChangeMsg } from "./utils.js";
 
@@ -17,7 +17,7 @@ const parseTags = (src: string, scope: string) => {
 	const re = /tag: ([@a-z0-9/.-]+)/g;
 	const tags: IObjectOf<string> = {};
 	const prefix = `refs/tags/${scope}/`;
-	let match: RegExpExecArray | null;
+	let match: Nullable<RegExpExecArray>;
 	while ((match = re.exec(src))) {
 		const [pkg, version] = <Pair<string, string>>(
 			match[1].substring(prefix.length).split("@")
@@ -48,7 +48,7 @@ export const parseCommit =
 		const rePkgFile = new RegExp(
 			`^${opts.pkgRoot}/([a-z0-9_-]+)/.+\\.(${fileExt})$`
 		);
-		let commit: Commit | undefined;
+		let commit: Maybe<Commit>;
 		return [
 			init,
 			(acc: any) => {
