@@ -30,6 +30,7 @@ import {
 	ARG_DRY,
 	ARG_DUMP_SPEC,
 	ARG_OUT_DIR,
+	ARG_SINCE,
 } from "./args.js";
 import { buildReleaseSpecFromCtx } from "./common.js";
 
@@ -41,6 +42,7 @@ export interface ChangelogOpts
 		DryRunOpts,
 		OutDirOpts {
 	branch: string;
+	since: string;
 }
 
 export const CHANGELOG: CommandSpec<ChangelogOpts> = {
@@ -57,6 +59,7 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
 		...ARG_DRY,
 		...ARG_DUMP_SPEC,
 		...ARG_OUT_DIR,
+		...ARG_SINCE,
 
 		branch: string({
 			alias: "b",
@@ -118,21 +121,24 @@ const changeLogForPackage = (
 ) => {
 	const allowedTypes = opts.ccTypes || CHANGELOG_TYPE_ORDER;
 	const changelog: any[] = [
-		"# Change Log",
-		"",
+		`# Change Log`,
+		``,
 		`- **Last updated**: ${FMT_ISO_SHORT(Date.now(), true)}`,
 		`- **Generator**: [thi.ng/monopub](https://thi.ng/monopub)`,
-		"",
-		"All notable changes to this project will be documented in this file.",
-		"See [Conventional Commits](https://conventionalcommits.org/) for commit guidelines.",
-		"",
-		"**Note:** Unlisted _patch_ versions only involve non-code or otherwise excluded changes",
-		"and/or version bumps of transitive dependencies.",
-		"",
+		``,
+		`All notable changes to this project will be documented in this file.`,
+		`Only versions published since **${opts.since}** are listed here.`,
+		`Please consult the Git history for older version information.`,
+		`See [Conventional Commits](https://conventionalcommits.org/) for commit guidelines.`,
+		``,
+		`**Note:** Unlisted _patch_ versions only involve non-code or otherwise excluded changes`,
+		`and/or version bumps of transitive dependencies.`,
+		``,
 	];
 	let first = true;
 	let hasNewChanges = false;
 	for (let r of releases) {
+		if (r[0].date < opts.since) break;
 		let version: string;
 		let commits: Commit[];
 		let date: string;

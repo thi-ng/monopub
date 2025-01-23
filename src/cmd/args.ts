@@ -51,3 +51,11 @@ export const ARG_REPEAT = {
 		},
 	}),
 };
+
+export const ARG_SINCE = {
+	since: string({
+		hint: "DATE",
+		default: `${new Date().getFullYear() - 3}-01-01`,
+		desc: "Cut-off date for versions to be included in changelog",
+	}),
+};

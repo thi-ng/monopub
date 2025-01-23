@@ -24,6 +24,7 @@ import {
 	ARG_DRY,
 	ARG_DUMP_SPEC,
 	ARG_REPEAT,
+	ARG_SINCE,
 } from "./args.js";
 import { generateChangeLogs } from "./changelog.js";
 import { buildReleaseSpecFromCtx } from "./common.js";
@@ -37,6 +38,7 @@ export interface ReleaseOpts
 		DumpSpecOpts,
 		MaxRepeatOpts {
 	changelogBranch: string;
+	since: string;
 	releaseBranch: string;
 	publishScript: string;
 	throttle: number;
@@ -54,6 +56,7 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 			{
 				...opts,
 				branch: opts.changelogBranch,
+				since: opts.since,
 				ccTypes: opts.ccTypes,
 			},
 			spec,
@@ -86,6 +89,8 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 		...ARG_DRY,
 		...ARG_DUMP_SPEC,
 		...ARG_REPEAT,
+		...ARG_SINCE,
+
 		changelogBranch: string({
 			alias: "cb",
 			hint: "NAME",
