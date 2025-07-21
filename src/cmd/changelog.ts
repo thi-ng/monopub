@@ -138,6 +138,7 @@ const changeLogForPackage = (
 	let first = true;
 	let hasNewChanges = false;
 	for (let r of releases) {
+		if (!r.length) continue;
 		if (r[0].date < opts.since) break;
 		let version: string;
 		let commits: Commit[];
