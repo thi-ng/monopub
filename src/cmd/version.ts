@@ -1,5 +1,4 @@
 import type { IObjectOf } from "@thi.ng/api";
-import type { Args } from "@thi.ng/args";
 import { assert } from "@thi.ng/errors";
 import { readJSON, writeJSON } from "@thi.ng/file-io";
 import { resolve } from "node:path";
@@ -32,7 +31,7 @@ export const VERSION: CommandSpec<VersionOpts> = {
 			ctx.logger
 		);
 	},
-	opts: <Args<VersionOpts>>{
+	opts: {
 		...ARG_ALL,
 		...ARG_DRY,
 		...ARG_DUMP_SPEC,

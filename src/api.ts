@@ -1,4 +1,4 @@
-import type { Fn, NumOrString } from "@thi.ng/api";
+import type { Fn } from "@thi.ng/api";
 import type { Args, KVDict } from "@thi.ng/args";
 import { readJSON } from "@thi.ng/file-io";
 import { resolve } from "node:path";
@@ -33,8 +33,10 @@ export interface CLIOpts {
 	alias: KVDict;
 	/**
 	 * Indentation for generated JSON files
+	 *
+	 * @defaultValue "\t"
 	 */
-	indent: NumOrString;
+	indent: string;
 }
 
 export interface AllPkgOpts {
@@ -69,7 +71,7 @@ export interface CommandSpec<T extends CLIOpts> {
 	/**
 	 * Command specific CLI arg specs
 	 */
-	opts: Args<T>;
+	opts: Args<Omit<T, keyof CLIOpts>>;
 	/**
 	 * Usage string for command overview.
 	 */

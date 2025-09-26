@@ -1,4 +1,4 @@
-import { coerceInt, int, string, type Args } from "@thi.ng/args";
+import { coerceInt, int, string } from "@thi.ng/args";
 import { delayed } from "@thi.ng/compose";
 import { illegalArgs } from "@thi.ng/errors";
 import { readJSON, writeJSON } from "@thi.ng/file-io";
@@ -83,7 +83,7 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 			"packages"
 		);
 	},
-	opts: <Args<ReleaseOpts>>{
+	opts: {
 		...ARG_ALL,
 		...ARG_CC_TYPES,
 		...ARG_DRY,
@@ -113,9 +113,9 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 			alias: "t",
 			default: 0,
 			desc: "Delay time (in ms) between publishing each pkg",
-			coerce: (x: string) => {
+			fn: (x: string) => {
 				const val = coerceInt(x);
-				return val >= 0 ? val : illegalArgs("value must be >= 0");
+				return val >= 0 || illegalArgs("value must be >= 0");
 			},
 		}),
 	},

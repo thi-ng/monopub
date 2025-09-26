@@ -1,4 +1,4 @@
-import { string, type Args } from "@thi.ng/args";
+import { string } from "@thi.ng/args";
 import { compareByKey } from "@thi.ng/compare";
 import { FMT_ISO_SHORT, dateTime } from "@thi.ng/date";
 import { writeText } from "@thi.ng/file-io";
@@ -53,7 +53,7 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
 			ctx.logger
 		);
 	},
-	opts: <Args<ChangelogOpts>>{
+	opts: {
 		...ARG_ALL,
 		...ARG_CC_TYPES,
 		...ARG_DRY,

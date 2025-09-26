@@ -1,7 +1,7 @@
 import { coerceInt, flag, int, oneOfMulti, string } from "@thi.ng/args";
+import { illegalArgs } from "@thi.ng/errors";
 import { DEFAULT_CC_TYPES } from "../api.js";
 import { CHANGELOG_TYPE_ORDER } from "../model/api.js";
-import { illegalArgs } from "@thi.ng/errors";
 
 export const ARG_ALL = {
 	all: flag({
@@ -11,10 +11,11 @@ export const ARG_ALL = {
 };
 
 export const ARG_CC_TYPES = {
-	ccTypes: oneOfMulti(CHANGELOG_TYPE_ORDER.slice(1), {
+	ccTypes: oneOfMulti({
 		alias: "cc",
 		hint: "TYPE",
 		delim: ",",
+		opts: CHANGELOG_TYPE_ORDER.slice(1),
 		default: DEFAULT_CC_TYPES,
 		desc: "Only consider given Conventional Commit types for determining changes",
 	}),
