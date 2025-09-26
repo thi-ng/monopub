@@ -1,61 +1,61 @@
 {
-    "name": "@thi.ng/monopub",
-    "version": "0.0.1",
-    "description": "Monorepo publish/release/changelog manager",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/thi-ng/monopub.git"
-    },
-    "homepage": "https://thi.ng/monopub",
-    "funding": [
-        {
-            "type": "github",
-            "url": "https://github.com/sponsors/postspectacular"
-        },
-        {
-            "type": "patreon",
-            "url": "https://patreon.com/thing_umbrella"
-        }
-    ],
-    "license": "Apache-2.0",
-    "author": "Karsten Schmidt <k+npm@thi.ng>",
-    "type": "module",
-    "module": "./lib/index.js",
-    "typings": "./lib/index.d.ts",
-    "sideEffects": false,
-    "bin": {
-        "notes": "bin/monopub"
-    },
-    "dependencies": {
-        "@thi.ng/api": "^8.11.31",
-        "@thi.ng/args": "^2.8.2",
-        "@thi.ng/bench": "^3.6.24",
-        "@thi.ng/checks": "^3.7.11",
-        "@thi.ng/compare": "^2.4.23",
-        "@thi.ng/date": "^2.7.57",
-        "@thi.ng/dgraph": "^2.1.170",
-        "@thi.ng/errors": "^2.5.37",
-        "@thi.ng/file-io": "^2.2.2",
-        "@thi.ng/logger": "^3.1.12",
-        "@thi.ng/rstream": "^9.2.33",
-        "@thi.ng/strings": "^3.9.17",
-        "@thi.ng/system": "^3.1.67",
-        "@thi.ng/text-format": "^2.2.36",
-        "@thi.ng/transducers": "^9.6.2",
-        "dotenv": "^17.2.0"
-    },
-    "devDependencies": {
-        "@types/node": "^24.0.15",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.8.3"
-    },
-    "files": [
-        "lib/*.js",
-        "bin"
-    ],
-    "scripts": {
-        "build": "yarn clean && tsc",
-        "clean": "rm -rf ./lib",
-        "dev": "yarn clean && tsc -w"
-    }
+	"name": "@thi.ng/monopub",
+	"version": "1.0.0",
+	"description": "Monorepo publish/release/changelog manager",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/thi-ng/monopub.git"
+	},
+	"homepage": "https://thi.ng/monopub",
+	"funding": [
+		{
+			"type": "github",
+			"url": "https://github.com/sponsors/postspectacular"
+		},
+		{
+			"type": "patreon",
+			"url": "https://patreon.com/thing_umbrella"
+		}
+	],
+	"license": "Apache-2.0",
+	"author": "Karsten Schmidt <k+npm@thi.ng>",
+	"type": "module",
+	"module": "./lib/index.js",
+	"typings": "./lib/index.d.ts",
+	"sideEffects": false,
+	"bin": {
+		"notes": "bin/monopub"
+	},
+	"dependencies": {
+		"@thi.ng/api": "^8.12.2",
+		"@thi.ng/args": "^3.1.0",
+		"@thi.ng/bench": "^3.6.29",
+		"@thi.ng/checks": "^3.7.18",
+		"@thi.ng/compare": "^2.4.28",
+		"@thi.ng/date": "^2.7.64",
+		"@thi.ng/dgraph": "^2.1.178",
+		"@thi.ng/errors": "^2.5.42",
+		"@thi.ng/file-io": "^2.2.10",
+		"@thi.ng/logger": "^3.2.0",
+		"@thi.ng/rstream": "^9.2.42",
+		"@thi.ng/strings": "^3.9.22",
+		"@thi.ng/system": "^3.1.76",
+		"@thi.ng/text-format": "^2.2.41",
+		"@thi.ng/transducers": "^9.6.10",
+		"dotenv": "^17.2.2"
+	},
+	"devDependencies": {
+		"@types/node": "^24.5.2",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.9.2"
+	},
+	"files": [
+		"lib/*.js",
+		"bin"
+	],
+	"scripts": {
+		"build": "yarn clean && tsc",
+		"clean": "rm -rf ./lib",
+		"dev": "yarn clean && tsc -w"
+	}
 }
