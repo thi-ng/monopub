@@ -13,6 +13,10 @@
 			"url": "https://github.com/sponsors/postspectacular"
 		},
 		{
+			"type": "liberapay",
+			"url": "https://liberapay.com/thi.ng"
+		},
+		{
 			"type": "patreon",
 			"url": "https://patreon.com/thing_umbrella"
 		}
@@ -28,26 +32,26 @@
 	},
 	"dependencies": {
 		"@thi.ng/api": "^8.12.2",
-		"@thi.ng/args": "^3.1.0",
+		"@thi.ng/args": "^3.1.1",
 		"@thi.ng/bench": "^3.6.29",
 		"@thi.ng/checks": "^3.7.18",
 		"@thi.ng/compare": "^2.4.28",
 		"@thi.ng/date": "^2.7.64",
 		"@thi.ng/dgraph": "^2.1.178",
 		"@thi.ng/errors": "^2.5.42",
-		"@thi.ng/file-io": "^2.2.10",
-		"@thi.ng/logger": "^3.2.0",
-		"@thi.ng/rstream": "^9.2.42",
+		"@thi.ng/file-io": "^2.2.11",
+		"@thi.ng/logger": "^3.2.1",
+		"@thi.ng/rstream": "^9.2.43",
 		"@thi.ng/strings": "^3.9.22",
-		"@thi.ng/system": "^3.1.76",
+		"@thi.ng/system": "^3.1.77",
 		"@thi.ng/text-format": "^2.2.41",
 		"@thi.ng/transducers": "^9.6.10",
-		"dotenv": "^17.2.2"
+		"dotenv": "^17.2.3"
 	},
 	"devDependencies": {
-		"@types/node": "^24.5.2",
+		"@types/node": "^24.8.1",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.9.2"
+		"typescript": "^5.9.3"
 	},
 	"files": [
 		"lib/*.js",
@@ -56,6 +60,10 @@
 	"scripts": {
 		"build": "yarn clean && tsc",
 		"clean": "rm -rf ./lib",
-		"dev": "yarn clean && tsc -w"
+		"dev": "yarn clean && tsc -w",
+		"pub": "yarn npm publish --access public"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
