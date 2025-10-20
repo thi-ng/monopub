@@ -61,7 +61,7 @@
 		"build": "yarn clean && tsc",
 		"clean": "rm -rf ./lib",
 		"dev": "yarn clean && tsc -w",
-		"pub": "yarn npm publish --access public"
+		"pub": "yarn publish --access public"
 	},
 	"publishConfig": {
 		"access": "public"
