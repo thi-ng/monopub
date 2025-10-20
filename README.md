@@ -31,24 +31,25 @@ Currently implemented:
 -   [x] Add pre-checks
     -   [x] On clean release branch?
     -   [ ] Valid npm login/auth?
+    -   [ ] Research granular NPM token creation
 
 ## Goals & Non-goals
 
 The original aim of this project was to produce an as minimal as possible
 release workflow suitable for the [thi.ng/umbrella
-monorepo](https://thi.ng/umbrella) (currently ~189 TypeScript
+monorepo](https://thi.ng/umbrella) (currently ~210 TypeScript
 projects/packages). Over the past 2+ years, this tool has been reliably used to
-handle ~180 releases (tens of thousands if you count individual package
+handle hundreds of releases (tens of thousands if you count individual package
 releases) and so I consider this goal reached. The tool is also a magnitude
-faster than my previous experience with Lerna. Version analysis, version bumping
-and changelog generation (all Conventional Commits based) for all ~190 packages
-in thi.ng/umbrella only takes ~2-3 seconds (max), unlike Lerna which regularly
-took 30+ secs for the same tasks (and produced worse changelogs)...
+faster than my previous user experience with Lerna. Version analysis, version
+bumping and changelog generation (all Conventional Commits based) for all ~210
+packages in thi.ng/umbrella only takes ~2-3 seconds (max), unlike Lerna which
+regularly took 30+ secs for the same tasks (and produced worse changelogs)...
 
 There are configuration options to allow this project being used with other
 (similarly structured) monorepo setups, however there's no desire to go down the
-usual route in JS-land of adding 100s of overly complicated options suitable for
-seemingly all use cases and then none...
+usual route in JS-land of adding hundreds of overly complicated options suitable
+for seemingly all use cases and then none...
 
 If you're interested in utilizing this tool with your repo, but not sure how,
 please reach out via the issue tracker...
@@ -160,4 +161,4 @@ Main:
 
 ## License
 
-&copy; 2021 - 2023 Karsten Schmidt // Apache Software License 2.0
+&copy; 2021 - 2025 Karsten Schmidt // Apache Software License 2.0
