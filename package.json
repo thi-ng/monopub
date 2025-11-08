@@ -31,25 +31,25 @@
 		"notes": "bin/monopub"
 	},
 	"dependencies": {
-		"@thi.ng/api": "^8.12.2",
-		"@thi.ng/args": "^3.1.1",
-		"@thi.ng/bench": "^3.6.29",
-		"@thi.ng/checks": "^3.7.18",
-		"@thi.ng/compare": "^2.4.28",
-		"@thi.ng/date": "^2.7.64",
-		"@thi.ng/dgraph": "^2.1.178",
-		"@thi.ng/errors": "^2.5.42",
-		"@thi.ng/file-io": "^2.2.11",
-		"@thi.ng/logger": "^3.2.1",
-		"@thi.ng/rstream": "^9.2.43",
-		"@thi.ng/strings": "^3.9.22",
-		"@thi.ng/system": "^3.1.77",
-		"@thi.ng/text-format": "^2.2.41",
-		"@thi.ng/transducers": "^9.6.10",
+		"@thi.ng/api": "^8.12.7",
+		"@thi.ng/args": "^3.2.1",
+		"@thi.ng/bench": "^3.6.34",
+		"@thi.ng/checks": "^3.7.23",
+		"@thi.ng/compare": "^2.4.33",
+		"@thi.ng/date": "^2.7.69",
+		"@thi.ng/dgraph": "^2.1.183",
+		"@thi.ng/errors": "^2.5.47",
+		"@thi.ng/file-io": "^2.2.16",
+		"@thi.ng/logger": "^3.2.6",
+		"@thi.ng/rstream": "^9.3.4",
+		"@thi.ng/strings": "^3.9.27",
+		"@thi.ng/system": "^3.1.82",
+		"@thi.ng/text-format": "^2.2.46",
+		"@thi.ng/transducers": "^9.6.15",
 		"dotenv": "^17.2.3"
 	},
 	"devDependencies": {
-		"@types/node": "^24.8.1",
+		"@types/node": "^24.10.0",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.9.3"
 	},
@@ -65,5 +65,6 @@
 	},
 	"publishConfig": {
 		"access": "public"
-	}
+	},
+	"packageManager": "yarn@4.11.0"
 }
