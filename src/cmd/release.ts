@@ -131,7 +131,12 @@ const execInRepo = (
 	...args: string[]
 ) => {
 	ctx.logger.debug(cmd, ...args);
-	return execFileSync(cmd, args, { cwd: ctx.opts.repoPath });
+	try {
+		return execFileSync(cmd, args, { cwd: ctx.opts.repoPath });
+	} catch (e) {
+		ctx.logger.severe((<Error>e).message);
+		throw new Error("Couldn't execute command, aborting...");
+	}
 };
 
 const ensureRepoIsClean = (ctx: CommandCtx<ReleaseOpts>) => {
