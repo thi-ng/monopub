@@ -105,6 +105,7 @@ export const CHANGELOG_TYPE_ORDER: ConventionalCommitType[] = [
 	"refactor",
 	"build",
 	"docs",
+	"test",
 	"chore",
 ];
 
@@ -117,6 +118,7 @@ export const CHANGELOG_TYPE_LABELS = {
 	docs: "📖 Documentation",
 	feat: "🚀 Features",
 	fix: "🩹 Bug fixes",
-	refactor: "♻️ Refactoring",
 	perf: "⏱ Performance improvements",
+	refactor: "♻️ Refactoring",
+	test: "🧪 Tests",
 };
