@@ -107,11 +107,4 @@ export const DEFAULT_CHANGELOG_BRANCH = "main";
 
 export const DEFAULT_RELEASE_BRANCH = "main";
 
-export const DEFAULT_CC_TYPES = [
-	"feat",
-	"fix",
-	"perf",
-	"refactor",
-	"test",
-	"docs",
-];
+export const DEFAULT_CC_TYPES = ["feat", "fix", "perf", "refactor", "test"];
