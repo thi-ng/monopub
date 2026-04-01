@@ -1,7 +1,7 @@
-import { coerceInt, flag, int, oneOfMulti, string } from "@thi.ng/args";
+import { coerceInt, flag, int, oneOf, oneOfMulti, string } from "@thi.ng/args";
 import { illegalArgs } from "@thi.ng/errors";
 import { DEFAULT_CC_TYPES } from "../api.js";
-import { CHANGELOG_TYPE_ORDER } from "../model/api.js";
+import { CHANGELOG_TYPE_ORDER, type RepoType } from "../model/api.js";
 
 export const ARG_ALL = {
 	all: flag({
@@ -58,5 +58,13 @@ export const ARG_SINCE = {
 		hint: "DATE",
 		default: `${new Date().getFullYear() - 3}-01-01`,
 		desc: "Cut-off date for versions to be included in changelog",
+	}),
+};
+
+export const ARG_REPO_TYPE = {
+	repoType: oneOf({
+		opts: <RepoType[]>["github", "forgejo"],
+		default: "github",
+		desc: "Repo type (used for URL generation in changelogs)",
 	}),
 };

@@ -21,7 +21,10 @@ import {
 	type Commit,
 	type ConventionalCommitType,
 	type ReleaseSpec,
+	type RepoType,
+	type RepoURLProvider,
 } from "../model/api.js";
+import { URL_PROVIDERS } from "../model/urls.js";
 import { isBreakingChangeMsg } from "../model/utils.js";
 import { classifyVersion } from "../model/version.js";
 import {
@@ -30,18 +33,21 @@ import {
 	ARG_DRY,
 	ARG_DUMP_SPEC,
 	ARG_OUT_DIR,
+	ARG_REPO_TYPE,
 	ARG_SINCE,
 } from "./args.js";
 import { buildReleaseSpecFromCtx } from "./common.js";
 
 export interface ChangelogOpts
-	extends CLIOpts,
+	extends
+		CLIOpts,
 		AllPkgOpts,
 		CCTypeOpts,
 		DumpSpecOpts,
 		DryRunOpts,
 		OutDirOpts {
 	branch: string;
+	repoType: RepoType;
 	since: string;
 }
 
@@ -50,7 +56,7 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
 		generateChangeLogs(
 			ctx.opts,
 			await buildReleaseSpecFromCtx(ctx),
-			ctx.logger
+			ctx.logger,
 		);
 	},
 	opts: {
@@ -59,6 +65,7 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
 		...ARG_DRY,
 		...ARG_DUMP_SPEC,
 		...ARG_OUT_DIR,
+		...ARG_REPO_TYPE,
 		...ARG_SINCE,
 
 		branch: string({
@@ -74,7 +81,7 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
 export const generateChangeLogs = (
 	opts: ChangelogOpts,
 	spec: Readonly<ReleaseSpec>,
-	logger: Logger
+	logger: Logger,
 ) => {
 	const dest = resolve(opts.outDir || opts.repoPath);
 	for (let pkg of spec.touched) {
@@ -84,14 +91,14 @@ export const generateChangeLogs = (
 			pkg,
 			spec.nextVersions[pkg],
 			[spec.unreleased, ...spec.previous],
-			false
+			false,
 		);
 		if (changelog) {
 			writeText(
 				`${dest}/packages/${pkg}/CHANGELOG.md`,
 				changelog,
 				logger,
-				opts.dryRun
+				opts.dryRun,
 			);
 		} else {
 			logger.info("skipping changelog:", pkg);
@@ -117,9 +124,9 @@ const changeLogForPackage = (
 	id: string,
 	nextVersion: string,
 	releases: Commit[][],
-	newOnly = true
+	newOnly = true,
 ) => {
-	const allowedTypes = opts.ccTypes || CHANGELOG_TYPE_ORDER;
+	const allowedTypes = new Set(opts.ccTypes || CHANGELOG_TYPE_ORDER);
 	const changelog: any[] = [
 		`# Change Log`,
 		``,
@@ -135,6 +142,12 @@ const changeLogForPackage = (
 		`and/or version bumps of transitive dependencies.`,
 		``,
 	];
+	const urlProvider = URL_PROVIDERS[opts.repoType]({
+		branch: opts.branch,
+		root: opts.root,
+		scope: opts.scope,
+		url: opts.repoUrl,
+	});
 	let first = true;
 	let hasNewChanges = false;
 	for (let r of releases) {
@@ -162,13 +175,13 @@ const changeLogForPackage = (
 				filter(
 					(x) =>
 						x.breaking ||
-						allowedTypes.includes(<ConventionalCommitType>x.type)
-				)
+						allowedTypes.has(<ConventionalCommitType>x.type),
+				),
 			),
 			groupByObj<Commit, Commit[]>({
 				key: (x) => (x.breaking ? "break" : x.type),
 			}),
-			commits.slice().sort(compareByKey("date"))
+			commits.slice().sort(compareByKey("date")),
 		);
 		if (!Object.keys(entryGroups).length) {
 			first = false;
@@ -179,11 +192,7 @@ const changeLogForPackage = (
 			first = false;
 		}
 		changelog.push(
-			`${versionHeader(version)} [${version}](${taggedPackageUrl(
-				opts,
-				id,
-				version
-			)}) (${date.substring(0, 10)})\n`
+			`${versionHeader(version)} ${versionLink(urlProvider, id, version)} (${date.substring(0, 10)})\n`,
 		);
 		for (let type of CHANGELOG_TYPE_ORDER) {
 			const group = entryGroups[type];
@@ -192,9 +201,10 @@ const changeLogForPackage = (
 			for (let e of group) {
 				const sha = e.sha.substring(0, 7);
 				changelog.push(
-					`- ${formatGFM(opts, e.title)} (${commitLink(opts, sha)})`
+					`- ${formatGFM(urlProvider, opts, e.title)} (${commitLink(urlProvider, sha)})`,
 				);
-				e.msg.length && changelog.push(formatLogMsg(opts, e.msg));
+				e.msg.length &&
+					changelog.push(formatLogMsg(urlProvider, opts, e.msg));
 			}
 			changelog.push("");
 		}
@@ -213,47 +223,56 @@ const changeLogForPackage = (
  * @param opts
  * @param line
  */
-const formatGFM = (opts: ChangelogOpts, line: string) => {
-	line = line
-		.replace(/#(\d+)/g, (_, id) => issueLink(opts, id))
-		.replace(/ ([a-f0-9]{7,})/g, (_, sha) => ` ${commitLink(opts, sha)}`);
-	return opts.scope
+const formatGFM = (
+	urlProvider: RepoURLProvider,
+	opts: ChangelogOpts,
+	line: string,
+) => {
+	line = opts.scope
 		? line.replace(
 				new RegExp(
 					`@?${opts.scope
 						.substring(1)
 						.replace(".", "\\.")}/([a-z0-9_-]+)`,
-					"g"
+					"g",
 				),
-				(_, id) => pkgLink(opts, id)
-		  )
+				(_, id) => pkgLink(urlProvider, opts.scope, id),
+			)
 		: line;
+	line = line
+		.replace(/#(\d+)/g, (_, id) => issueLink(urlProvider, id))
+		.replace(
+			/ ([a-f0-9]{7,})/g,
+			(_, sha) => ` ${commitLink(urlProvider, sha)}`,
+		);
+	return line;
 };
 
-const formatLogMsg = (opts: ChangelogOpts, msg: string[]) =>
+const formatLogMsg = (
+	urlProvider: RepoURLProvider,
+	opts: ChangelogOpts,
+	msg: string[],
+) =>
 	msg
 		.map(
 			(x) =>
-				`${isBreakingChangeMsg(x) ? "- " : "  "}${formatGFM(opts, x)}`
+				`${isBreakingChangeMsg(x) ? "- " : "  "}${formatGFM(urlProvider, opts, x)}`,
 		)
 		.join("\n");
 
 const versionHeader = (version: string) =>
-	({ major: "#", minor: "##", patch: "###" }[classifyVersion(version)]);
+	({ major: "#", minor: "##", patch: "###" })[classifyVersion(version)];
 
-const taggedPackageUrl = (opts: ChangelogOpts, pkg: string, version: string) =>
-	`${opts.repoUrl}/tree/${
-		opts.scope ? opts.scope + "/" : ""
-	}${pkg}@${version}`;
+const mdLink = (label: string, href: string) => `[${label}](${href})`;
 
-const commitUrl = (opts: ChangelogOpts, sha: string) =>
-	`${opts.repoUrl}/commit/${sha}`;
+const versionLink = (provider: RepoURLProvider, id: string, version: string) =>
+	mdLink(version, provider.taggedPackage(id, version));
 
-const issueLink = (opts: ChangelogOpts, id: string) =>
-	`[#${id}](${opts.repoUrl}/issues/${id})`;
+const issueLink = (provider: RepoURLProvider, id: string) =>
+	mdLink(`#${id}`, provider.issue(id));
 
-const commitLink = (opts: ChangelogOpts, sha: string) =>
-	`[${sha}](${commitUrl(opts, sha)})`;
+const commitLink = (provider: RepoURLProvider, sha: string) =>
+	mdLink(sha, provider.commit(sha));
 
-const pkgLink = (opts: ChangelogOpts, pkg: string) =>
-	`[${opts.scope}/${pkg}](${opts.repoUrl}/tree/${opts.branch}/${opts.root}/${pkg})`;
+const pkgLink = (provider: RepoURLProvider, scope: string, pkg: string) =>
+	mdLink(`${scope}/${pkg}`, provider.package(pkg));

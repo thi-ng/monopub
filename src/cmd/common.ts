@@ -1,4 +1,4 @@
-import type { CommandCtx } from "../api.js";
+import { DEFAULT_RELEASE_BRANCH, type CommandCtx } from "../api.js";
 import { buildReleaseSpec } from "../model/release.js";
 
 export const buildReleaseSpecFromCtx = ({ logger, opts }: CommandCtx<any>) =>
@@ -6,6 +6,8 @@ export const buildReleaseSpecFromCtx = ({ logger, opts }: CommandCtx<any>) =>
 		{
 			path: opts.repoPath,
 			url: opts.repoUrl,
+			type: opts.repoType ?? "github",
+			branch: opts.branch ?? DEFAULT_RELEASE_BRANCH,
 			scope: opts.scope,
 			pkgRoot: opts.root,
 			fileExt: opts.ext,
@@ -14,5 +16,5 @@ export const buildReleaseSpecFromCtx = ({ logger, opts }: CommandCtx<any>) =>
 			dump: opts.dumpSpec,
 			indent: opts.indent,
 		},
-		logger
+		logger,
 	);

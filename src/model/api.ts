@@ -12,6 +12,15 @@ export interface RepoConfig {
 	 */
 	url: string;
 	/**
+	 * Target branch
+	 */
+	branch: string;
+	/**
+	 * Repo type used for delegating to correct {@link RepoURLProvider}. Also
+	 * see {@link URL_PROVIDERS}.
+	 */
+	type: RepoType;
+	/**
 	 * Relative package root dir in repo (NO trailing slash!).
 	 *
 	 * @defaultValue "packages"
@@ -29,6 +38,19 @@ export interface RepoConfig {
 	 * Package names aliases (keys = old name, vals = new name)
 	 */
 	alias: KVDict;
+}
+
+export type RepoType = "github" | "forgejo";
+
+export interface RepoURLProvider {
+	/** URL to a package on a pre-configured branch */
+	package(pkg: string): string;
+	/** URL to a package on a tagged version branch */
+	taggedPackage(pkg: string, version: string): string;
+	/** URL to given commit SHA */
+	commit(sha: string): string;
+	/** URL to given ID */
+	issue(id: string): string;
 }
 
 export interface Commit {

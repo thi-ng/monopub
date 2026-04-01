@@ -16,7 +16,7 @@ import {
 	type MaxRepeatOpts,
 } from "../api.js";
 import type { Logger } from "../logger.js";
-import type { ReleaseSpec } from "../model/api.js";
+import type { ReleaseSpec, RepoType } from "../model/api.js";
 import { pkgJsonPath, pkgPath } from "../model/package.js";
 import {
 	ARG_ALL,
@@ -24,6 +24,7 @@ import {
 	ARG_DRY,
 	ARG_DUMP_SPEC,
 	ARG_REPEAT,
+	ARG_REPO_TYPE,
 	ARG_SINCE,
 } from "./args.js";
 import { generateChangeLogs } from "./changelog.js";
@@ -31,16 +32,18 @@ import { buildReleaseSpecFromCtx } from "./common.js";
 import { applyVersionBumps } from "./version.js";
 
 export interface ReleaseOpts
-	extends CLIOpts,
+	extends
+		CLIOpts,
 		AllPkgOpts,
 		CCTypeOpts,
 		DryRunOpts,
 		DumpSpecOpts,
 		MaxRepeatOpts {
 	changelogBranch: string;
-	since: string;
-	releaseBranch: string;
 	publishScript: string;
+	releaseBranch: string;
+	repoType: RepoType;
+	since: string;
 	throttle: number;
 }
 
@@ -60,7 +63,7 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 				ccTypes: opts.ccTypes,
 			},
 			spec,
-			logger
+			logger,
 		);
 		logSep(logger);
 		applyVersionBumps(opts, spec, logger);
@@ -80,7 +83,7 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 		logger.info(
 			"Successfully published",
 			Object.keys(spec.nextVersions).length,
-			"packages"
+			"packages",
 		);
 	},
 	opts: {
@@ -89,6 +92,7 @@ export const RELEASE: CommandSpec<ReleaseOpts> = {
 		...ARG_DRY,
 		...ARG_DUMP_SPEC,
 		...ARG_REPEAT,
+		...ARG_REPO_TYPE,
 		...ARG_SINCE,
 
 		changelogBranch: string({
@@ -167,8 +171,8 @@ const gitCommit = (ctx: CommandCtx<ReleaseOpts>, spec: ReleaseSpec) => {
 		"-f",
 		"yarn.lock",
 		...Object.keys(spec.nextVersions).map(
-			(x) => `${opts.root}/${x}/CHANGELOG.md`
-		)
+			(x) => `${opts.root}/${x}/CHANGELOG.md`,
+		),
 	);
 	execInRepo(ctx, "git", "commit", "-a", "-m", "Publish");
 };
@@ -211,7 +215,7 @@ const injectGitHead = (ctx: CommandCtx<ReleaseOpts>, spec: ReleaseSpec) => {
 
 const publishPackages = async (
 	ctx: CommandCtx<ReleaseOpts>,
-	spec: ReleaseSpec
+	spec: ReleaseSpec,
 ) => {
 	const { opts, logger } = ctx;
 	const packages = [...spec.graph].filter((id) => spec.nextVersions[id]);
@@ -222,7 +226,7 @@ const publishPackages = async (
 			opts.dryRun,
 			`(${i + 1} / ${num}) publishing pkg: ${opts.scope}/${id}@${
 				spec.nextVersions[id]
-			}`
+			}`,
 		);
 		if (!opts.dryRun) {
 			for (let k = 0; k < opts.maxRepeat; k++) {
@@ -238,13 +242,13 @@ const publishPackages = async (
 						logger.info(
 							"waiting for ",
 							1 << k,
-							"second(s) before retrying..."
+							"second(s) before retrying...",
 						);
 						await delayed(null, (1 << k) * 1000);
 					} else {
 						gitReset(ctx);
 						throw new Error(
-							"reached max. number of publish attempts, giving up..."
+							"reached max. number of publish attempts, giving up...",
 						);
 					}
 				}
