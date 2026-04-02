@@ -10,28 +10,28 @@ Commits](https://conventionalcommits.org/).
 
 Currently implemented:
 
--   [x] Detailed Git commit parsing, filtering & analysis
-    -   [x] Filter by file ext
-    -   [x] Package name aliases (to assign commits from old pkg names)
--   [x] Computing packages touched by recent commits (or allow forcing all)
--   [x] Dependency graph construction for monorepo internal packages (incl. topological sort)
--   [x] Computing new package versions (based on Conventional Commit types used)
--   [x] Selective changelog creation (as Markdown files)
-    -   [x] Commit type config
--   [x] Repo/publish config via dotenv
--   [x] Update package files w/ version bumps
-    -   [x] Update/bump deps in transitive dependents
-    -   [x] Update `yarn.lock` prior to 'publish' commit
--   [x] Commit updated package, yarn.lock & changelog files
--   [x] Create & add release tags
--   [x] Push to git remote
--   [x] Inject `gitHead` into published `package.json` files
--   [x] Publish to registry
--   [x] Reset git head post-publish
--   [x] Add pre-checks
-    -   [x] On clean release branch?
-    -   [ ] Valid npm login/auth?
-    -   [ ] Research granular NPM token creation
+- [x] Detailed Git commit parsing, filtering & analysis
+    - [x] Filter by file ext
+    - [x] Package name aliases (to assign commits from old pkg names)
+- [x] Computing packages touched by recent commits (or allow forcing all)
+- [x] Dependency graph construction for monorepo internal packages (incl. topological sort)
+- [x] Computing new package versions (based on Conventional Commit types used)
+- [x] Selective changelog creation (as Markdown files)
+    - [x] Commit type config
+- [x] Repo/publish config via dotenv
+- [x] Update package files w/ version bumps
+    - [x] Update/bump deps in transitive dependents
+    - [x] Update `yarn.lock` prior to 'publish' commit
+- [x] Commit updated package, yarn.lock & changelog files
+- [x] Create & add release tags
+- [x] Push to git remote
+- [x] Inject `gitHead` into published `package.json` files
+- [x] Publish to registry
+- [x] Reset git head post-publish
+- [x] Add pre-checks
+    - [x] On clean release branch?
+    - [ ] Valid npm login/auth?
+    - [ ] Research granular NPM token creation
 
 ## Goals & Non-goals
 
@@ -118,6 +118,9 @@ Main:
                                     ["feat","fix","refactor","perf"])
 --dump-spec PATH                    Write release spec to JSON file
 -o PATH, --out-dir PATH             Output root dir (default: --repo-path)
+--repo-type ID                      Repo type (used for URL generation in changelogs): "github", "forgejo"
+                                    (default: "github")
+--since DATE                        Cut-off date for versions to be included in changelog (default: "2023-01-01")
 ```
 
 ### Command: version
@@ -156,6 +159,9 @@ Main:
 --max-repeat INT                    Max attempts (default: 3)
 -script CMD, --publish-script CMD   Publish script alias name (default: "pub")
 -rb NAME, --release-branch NAME     Remote branch name for publishing releases (default: "main")
+--repo-type ID                      Repo type (used for URL generation in changelogs): "github", "forgejo"
+                                    (default: "github")
+--since DATE                        Cut-off date for versions to be included in changelog (default: "2023-01-01")
 -t INT, --throttle INT              Delay time (in ms) between publishing each pkg (default: 0)
 ```
 
