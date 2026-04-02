@@ -214,20 +214,18 @@ const changeLogForPackage = (
 
 /**
  * Applies some Github Flavored Markdown formatting to given line. Currently,
- * only the following are processed/replaced with links:
+ * only the following are processed/replaced with links (via given URL
+ * provider):
  *
  * - issue IDs
  * - commit SHA1s
  * - scoped package names
  *
+ * @param url
  * @param opts
  * @param line
  */
-const formatGFM = (
-	urlProvider: RepoURLProvider,
-	opts: ChangelogOpts,
-	line: string,
-) => {
+const formatGFM = (url: RepoURLProvider, opts: ChangelogOpts, line: string) => {
 	line = opts.scope
 		? line.replace(
 				new RegExp(
@@ -236,27 +234,24 @@ const formatGFM = (
 						.replace(".", "\\.")}/([a-z0-9_-]+)`,
 					"g",
 				),
-				(_, id) => pkgLink(urlProvider, opts.scope, id),
+				(_, id) => pkgLink(url, opts.scope, id),
 			)
 		: line;
 	line = line
-		.replace(/#(\d+)/g, (_, id) => issueLink(urlProvider, id))
-		.replace(
-			/ ([a-f0-9]{7,})/g,
-			(_, sha) => ` ${commitLink(urlProvider, sha)}`,
-		);
+		.replace(/#(\d+)/g, (_, id) => issueLink(url, id))
+		.replace(/ ([a-f0-9]{7,})/g, (_, sha) => ` ${commitLink(url, sha)}`);
 	return line;
 };
 
 const formatLogMsg = (
-	urlProvider: RepoURLProvider,
+	url: RepoURLProvider,
 	opts: ChangelogOpts,
 	msg: string[],
 ) =>
 	msg
 		.map(
 			(x) =>
-				`${isBreakingChangeMsg(x) ? "- " : "  "}${formatGFM(urlProvider, opts, x)}`,
+				`${isBreakingChangeMsg(x) ? "- " : "  "}${formatGFM(url, opts, x)}`,
 		)
 		.join("\n");
 
@@ -265,14 +260,14 @@ const versionHeader = (version: string) =>
 
 const mdLink = (label: string, href: string) => `[${label}](${href})`;
 
-const versionLink = (provider: RepoURLProvider, id: string, version: string) =>
-	mdLink(version, provider.taggedPackage(id, version));
+const versionLink = (url: RepoURLProvider, id: string, version: string) =>
+	mdLink(version, url.taggedPackage(id, version));
 
-const issueLink = (provider: RepoURLProvider, id: string) =>
-	mdLink(`#${id}`, provider.issue(id));
+const issueLink = (url: RepoURLProvider, id: string) =>
+	mdLink(`#${id}`, url.issue(id));
 
-const commitLink = (provider: RepoURLProvider, sha: string) =>
-	mdLink(sha, provider.commit(sha));
+const commitLink = (url: RepoURLProvider, sha: string) =>
+	mdLink(sha, url.commit(sha));
 
-const pkgLink = (provider: RepoURLProvider, scope: string, pkg: string) =>
-	mdLink(`${scope}/${pkg}`, provider.package(pkg));
+const pkgLink = (url: RepoURLProvider, scope: string, pkg: string) =>
+	mdLink(`${scope}/${pkg}`, url.package(pkg));

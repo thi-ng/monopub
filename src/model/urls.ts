@@ -5,31 +5,29 @@ export const URL_PROVIDERS: Record<
 	RepoType,
 	Fn<Record<"branch" | "root" | "scope" | "url", string>, RepoURLProvider>
 > = {
-	github: (opts) => ({
-		package: (pkg: string) =>
-			`${opts.url}/tree/${opts.branch}/${opts.root}/${pkg}`,
+	github: ({ branch, root, scope, url }) => ({
+		package: (pkg: string) => `${url}/tree/${branch}/${root}/${pkg}`,
 
 		taggedPackage: (pkg: string, version: string) =>
-			`${opts.url}/tree/${
-				opts.scope ? opts.scope + "/" : ""
-			}${pkg}@${version}/${opts.root}/${pkg}`,
+			`${url}/tree/${
+				scope ? scope + "/" : ""
+			}${pkg}@${version}/${root}/${pkg}`,
 
-		commit: (sha: string) => `${opts.url}/commit/${sha}`,
+		commit: (sha: string) => `${url}/commit/${sha}`,
 
-		issue: (id: string) => `${opts.url}/issues/${id}`,
+		issue: (id: string) => `${url}/issues/${id}`,
 	}),
 
-	forgejo: (opts) => ({
-		package: (pkg: string) =>
-			`${opts.url}/src/branch/${opts.branch}/${opts.root}/${pkg}`,
+	forgejo: ({ branch, root, scope, url }) => ({
+		package: (pkg: string) => `${url}/src/branch/${branch}/${root}/${pkg}`,
 
 		taggedPackage: (pkg: string, version: string) =>
-			`${opts.url}/src/tag/${
-				opts.scope ? opts.scope + "/" : ""
-			}${pkg}@${version}/${opts.root}/${pkg}`,
+			`${url}/src/tag/${
+				scope ? scope + "/" : ""
+			}${pkg}@${version}/${root}/${pkg}`,
 
-		commit: (sha: string) => `${opts.url}/commit/${sha}`,
+		commit: (sha: string) => `${url}/commit/${sha}`,
 
-		issue: (id: string) => `${opts.url}/issues/${id}`,
+		issue: (id: string) => `${url}/issues/${id}`,
 	}),
 };
