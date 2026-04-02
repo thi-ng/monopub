@@ -203,7 +203,9 @@ const gitReset = (ctx: CommandCtx<ReleaseOpts>) => {
 
 const injectGitHead = (ctx: CommandCtx<ReleaseOpts>, spec: ReleaseSpec) => {
 	const { opts, logger } = ctx;
-	const gitHead = execInRepo(ctx, "git", "rev-parse", "HEAD").toString();
+	const gitHead = execInRepo(ctx, "git", "rev-parse", "HEAD")
+		.toString()
+		.trim();
 	logger.dry(opts.dryRun, "injecting gitHead SHA", gitHead);
 	for (let id in spec.nextVersions) {
 		const path = pkgJsonPath(opts.repoPath, opts.root, id);
