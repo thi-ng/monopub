@@ -5,7 +5,7 @@ import { readJSON, writeJSON } from "@thi.ng/file-io";
 import { conj, mapcat, partitionWhen, transduce } from "@thi.ng/transducers";
 import type { Logger } from "../logger.js";
 import type { ReleaseSpec, ReleaseSpecOpts } from "./api.js";
-import { commitsSinceLastPublish } from "./git.js";
+import { parseCommits } from "./git.js";
 import { pkgJsonPath, pkgShortName } from "./package.js";
 import { isPublish } from "./utils.js";
 import { classifyVersionBump, versionBump } from "./version.js";
@@ -14,8 +14,9 @@ export const buildReleaseSpec = async (
 	opts: ReleaseSpecOpts,
 	logger: Logger
 ) => {
-	const commits = await commitsSinceLastPublish(opts);
+	const commits = await parseCommits(opts);
 	assert(commits.length > 0, `no new commits yet, exiting...`);
+	logger.info(commits.length, "commits parsed");
 	let groups = [...partitionWhen(isPublish, commits)];
 	const [unreleased, previous] = isPublish(groups[0][0])
 		? [[], groups]

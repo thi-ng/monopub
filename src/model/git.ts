@@ -33,7 +33,7 @@ type ParseCommitOpts = Required<
 
 /**
  * Transducer consuming lines from `git log` and parsing/grouping them into
- * {@link Commit} objects. Used by {@link commitsSinceLastPublish}.
+ * {@link Commit} objects. Used by {@link parseCommits}.
  *
  * @param opts
  */
@@ -127,12 +127,13 @@ export const parseCommit =
 
 const resolveAlias = (aliases: KVDict, id: string) => aliases[id] || id;
 
-export const commitsSinceLastPublish = async (opts: CommitHistoryOpts) => {
+export const parseCommits = async (opts: CommitHistoryOpts) => {
 	const cmd = spawn(
 		"git",
 		[
 			"log",
 			"--no-color",
+			"--no-renames",
 			"--name-status",
 			"--decorate=full",
 			"--date=iso-strict",
