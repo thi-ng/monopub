@@ -16,7 +16,7 @@ interface App {
 	logger: Logger;
 }
 
-config();
+config({ quiet: true });
 
 (async () => {
 	// main app
