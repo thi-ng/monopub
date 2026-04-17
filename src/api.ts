@@ -86,7 +86,7 @@ export interface CommandCtx<T extends CLIOpts> {
 	rest: string[];
 }
 
-export const INSTALL_DIR = resolve(`${process.argv[2]}/..`);
+export const INSTALL_DIR = resolve(process.argv[2]);
 
 export const PKG = readJSON(`${INSTALL_DIR}/package.json`);
 
