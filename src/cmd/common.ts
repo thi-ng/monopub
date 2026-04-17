@@ -16,5 +16,5 @@ export const buildReleaseSpecFromCtx = ({ logger, opts }: CommandCtx<any>) =>
 			dump: opts.dumpSpec,
 			indent: opts.indent,
 		},
-		logger,
+		logger
 	);

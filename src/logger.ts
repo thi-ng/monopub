@@ -2,7 +2,11 @@ import { ConsoleLogger, LogLevel, type LogEntry } from "@thi.ng/logger";
 import type { AppConfig } from "./config.js";
 
 export class Logger extends ConsoleLogger {
-	constructor(protected config: AppConfig, id: string, level: LogLevel) {
+	constructor(
+		protected config: AppConfig,
+		id: string,
+		level: LogLevel
+	) {
 		super(id, level);
 	}
 

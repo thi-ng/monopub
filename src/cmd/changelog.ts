@@ -56,7 +56,7 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
 		generateChangeLogs(
 			ctx.opts,
 			await buildReleaseSpecFromCtx(ctx),
-			ctx.logger,
+			ctx.logger
 		);
 	},
 	opts: {
@@ -81,7 +81,7 @@ export const CHANGELOG: CommandSpec<ChangelogOpts> = {
 export const generateChangeLogs = (
 	opts: ChangelogOpts,
 	spec: Readonly<ReleaseSpec>,
-	logger: Logger,
+	logger: Logger
 ) => {
 	const dest = resolve(opts.outDir || opts.repoPath);
 	for (let pkg of spec.touched) {
@@ -91,14 +91,14 @@ export const generateChangeLogs = (
 			pkg,
 			spec.nextVersions[pkg],
 			[spec.unreleased, ...spec.previous],
-			false,
+			false
 		);
 		if (changelog) {
 			writeText(
 				`${dest}/packages/${pkg}/CHANGELOG.md`,
 				changelog,
 				logger,
-				opts.dryRun,
+				opts.dryRun
 			);
 		} else {
 			logger.info("skipping changelog:", pkg);
@@ -124,7 +124,7 @@ const changeLogForPackage = (
 	id: string,
 	nextVersion: string,
 	releases: Commit[][],
-	newOnly = true,
+	newOnly = true
 ) => {
 	const allowedTypes = new Set(opts.ccTypes || CHANGELOG_TYPE_ORDER);
 	const changelog: any[] = [
@@ -175,13 +175,13 @@ const changeLogForPackage = (
 				filter(
 					(x) =>
 						x.breaking ||
-						allowedTypes.has(<ConventionalCommitType>x.type),
-				),
+						allowedTypes.has(<ConventionalCommitType>x.type)
+				)
 			),
 			groupByObj<Commit, Commit[]>({
 				key: (x) => (x.breaking ? "break" : x.type),
 			}),
-			commits.slice().sort(compareByKey("date")),
+			commits.slice().sort(compareByKey("date"))
 		);
 		if (!Object.keys(entryGroups).length) {
 			first = false;
@@ -192,7 +192,7 @@ const changeLogForPackage = (
 			first = false;
 		}
 		changelog.push(
-			`${versionHeader(version)} ${versionLink(urlProvider, id, version)} (${date.substring(0, 10)})\n`,
+			`${versionHeader(version)} ${versionLink(urlProvider, id, version)} (${date.substring(0, 10)})\n`
 		);
 		for (let type of CHANGELOG_TYPE_ORDER) {
 			const group = entryGroups[type];
@@ -201,7 +201,7 @@ const changeLogForPackage = (
 			for (let e of group) {
 				const sha = e.sha.substring(0, 7);
 				changelog.push(
-					`- ${formatGFM(urlProvider, opts, e.title)} (${commitLink(urlProvider, sha)})`,
+					`- ${formatGFM(urlProvider, opts, e.title)} (${commitLink(urlProvider, sha)})`
 				);
 				e.msg.length &&
 					changelog.push(formatLogMsg(urlProvider, opts, e.msg));
@@ -232,9 +232,9 @@ const formatGFM = (url: RepoURLProvider, opts: ChangelogOpts, line: string) => {
 					`@?${opts.scope
 						.substring(1)
 						.replace(".", "\\.")}/([a-z0-9_-]+)`,
-					"g",
+					"g"
 				),
-				(_, id) => pkgLink(url, opts.scope, id),
+				(_, id) => pkgLink(url, opts.scope, id)
 			)
 		: line;
 	line = line
@@ -246,12 +246,12 @@ const formatGFM = (url: RepoURLProvider, opts: ChangelogOpts, line: string) => {
 const formatLogMsg = (
 	url: RepoURLProvider,
 	opts: ChangelogOpts,
-	msg: string[],
+	msg: string[]
 ) =>
 	msg
 		.map(
 			(x) =>
-				`${isBreakingChangeMsg(x) ? "- " : "  "}${formatGFM(url, opts, x)}`,
+				`${isBreakingChangeMsg(x) ? "- " : "  "}${formatGFM(url, opts, x)}`
 		)
 		.join("\n");
 

@@ -17,11 +17,7 @@ import { ARG_ALL, ARG_DRY, ARG_DUMP_SPEC, ARG_OUT_DIR } from "./args.js";
 import { buildReleaseSpecFromCtx } from "./common.js";
 
 export interface VersionOpts
-	extends CLIOpts,
-		AllPkgOpts,
-		DumpSpecOpts,
-		DryRunOpts,
-		OutDirOpts {}
+	extends CLIOpts, AllPkgOpts, DumpSpecOpts, DryRunOpts, OutDirOpts {}
 
 export const VERSION: CommandSpec<VersionOpts> = {
 	fn: async (ctx) => {
