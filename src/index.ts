@@ -1,4 +1,4 @@
-import { LogLevel, type LogLevelName } from "@thi.ng/logger";
+import { LogLevel } from "@thi.ng/logger";
 import { defSystem } from "@thi.ng/system";
 import { config } from "dotenv";
 import { APP_NAME } from "./api.js";
@@ -26,11 +26,7 @@ config({ quiet: true });
 		},
 		logger: {
 			factory: async ({ config }) =>
-				new Logger(
-					config,
-					APP_NAME,
-					LogLevel[<LogLevelName>config.logLevel]
-				),
+				new Logger(config, APP_NAME, LogLevel[config.logLevel]),
 			deps: ["config"],
 		},
 		commands: {
