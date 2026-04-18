@@ -16,7 +16,7 @@ export const buildReleaseSpec = async (
 ) => {
 	const commits = await parseCommits(opts);
 	assert(commits.length > 0, `no new commits yet, exiting...`);
-	logger.info(commits.length, "commits parsed");
+	logger.debug(commits!.length, "commits parsed");
 	let groups = [...partitionWhen(isPublish, commits)];
 	const [unreleased, previous] = isPublish(groups[0][0])
 		? [[], groups]
@@ -26,13 +26,12 @@ export const buildReleaseSpec = async (
 		conj<string>(),
 		opts.all ? commits : unreleased
 	);
+	logger.debug("touched packages", [...touchedPkgIDs]);
 	const allPkgIDs = transduce(
 		mapcat((x) => x.pkgs),
 		conj<string>(),
 		commits
 	);
-	// touchedPkgIDs.delete("api");
-	// touchedPkgIDs.delete("transducers");
 	const { deps, versions } = buildPkgCache(
 		opts,
 		allPkgIDs,

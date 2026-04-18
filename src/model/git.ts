@@ -140,12 +140,21 @@ export const parseCommits = async (opts: CommitHistoryOpts) => {
 		],
 		{ cwd: opts.path }
 	);
-	return await $transduce(
-		linesFromNodeJS(cmd.stdout, cmd.stderr),
+	const result = await $transduce(
+		linesFromNodeJS(cmd.stdout),
 		comp(
 			parseCommit(opts),
 			filter((x) => x.pkgs.length > 0)
 		),
 		push<Commit>()
 	);
+	const err = await (async () => {
+		let err = "";
+		for await (const chunk of cmd.stderr) {
+			err += chunk.toString();
+		}
+		return err;
+	})();
+	if (cmd.exitCode) throw new Error("git error: " + err);
+	return result;
 };
